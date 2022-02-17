@@ -1,16 +1,20 @@
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
-import info from 'config.json' assert { type:`config.json`};
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 const requestWCA = async(cmd, args) => {
 	if (cmd === 'wr'){
-        url = 'https://www.worldcubeassociation.org/api/v0/records'
+		let url = 'https://www.worldcubeassociation.org/api/v0/records';
+    	const res = await fetch(url);
+    	const json = await res.json();
+    	console.log(json);
+    	if (args === '33'){
+    		let wr33 = await json.world_records['333'];
+    		msg.channel.send(wr33)
+    		return wr33;
+    	}
+    	return json;
     }
-    const res = await fetch(url);
-    console.log(res);
-    const json = await res.json();
-    return {json};
 }
 Bot.on('ready', () => {
 
@@ -33,10 +37,10 @@ Bot.on('message', msg  => {
 
 	if (cmd === 'wr'){
 		if (args[0] === '33'){
-			msg.channel.send('Les wr de 3x3 sont \n Single : 3.47 \n Ao5 : 5.07');
+			requestWCA(cmd, args);
+			msg.channel.send(wr33);
 		}
 		else if (args[0] !== '33') return;
-		requestWCA(cmd, args);
 	}
 
 	else if (cmd === 'ranking'){
@@ -60,4 +64,4 @@ Bot.on('message', msg  => {
 
 
 });
-Bot.login(config.token);
+Bot.login(process.env.TOKEN);
