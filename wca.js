@@ -6,6 +6,7 @@ let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 const requestWCA = async(cmd, args, msg) => {
 	if (cmd === 'wr'){
+		if (args[0] === 'mbld') return;
 		let event = events[args[0]];
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
     	const res = await fetch(url);
@@ -13,14 +14,29 @@ const requestWCA = async(cmd, args, msg) => {
     	const wr = await json.world_records[event];
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
-    	if (wrS > 60){
+    	if (wrS > 60 || wrA >60){
     		let minutesS = Math.floor(wrS/60);
-    		let secondsS = wrS%60;
+    		let secondsS = Math.round((wrS%60)*100);
+    		let secondsSF = secondsS/100;
 
     		let minutesA = Math.floor(wrA/60);
-    		let secondsA = wrA%60;
+    		let secondsA = Math.round((wrA%60)*100);
+    		let secondsAF = secondsA/100;
 
-    		msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsS} et le record Ao5 est ${minutesA}:${secondsA}.`);
+    		if (secondsSF < 10){
+    			if (secondsAF < 10){
+    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    			}
+    			else if (secondsAF > 10){
+    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    			}
+    		}
+    		else if (secondsSF >10 && secondsAF<10){
+    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    		}
+    		else if (secondsSF>10 && secondsAF>10){
+    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    		}
     	}
     	else if (wrS < 60){
     		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le record Ao5 est ${wrA}.`);

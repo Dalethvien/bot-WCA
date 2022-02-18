@@ -15,7 +15,9 @@ const events ={
 	"fmc": "333fm",
 	"pyra": "pyram",
 	"skewb": "skewb",
-	"sq1": "sq1"
+	"sq1": "sq1",
+	"mulitbld": "333mbf",
+	"mbld": "333mbf"
 		}
 const single ={
 	"single": "single",
