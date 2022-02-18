@@ -1,20 +1,33 @@
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
+import {events} from './param.js';
+import {single} from './param.js';
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
-const requestWCA = async(cmd, args) => {
+const requestWCA = async(cmd, args, msg) => {
 	if (cmd === 'wr'){
+		let event = events[args[0]];
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
     	const res = await fetch(url);
     	const json = await res.json();
-    	console.log(json);
-    	if (args === '33'){
-    		let wr33 = await json.world_records['333'];
-    		msg.channel.send(wr33)
-    		return wr33;
+    	const wr = await json.world_records[event];
+    	const wrS = Number(wr['single'])/100;
+    	const wrA = Number(wr['average'])/100;
+    	if (wrS > 60){
+    		let minutesS = Math.floor(wrS/60);
+    		let secondsS = wrS%60;
+
+    		let minutesA = Math.floor(wrA/60);
+    		let secondsA = wrA%60;
+
+    		msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsS} et le record Ao5 est ${minutesA}:${secondsA}.`);
     	}
-    	return json;
+    	else if (wrS < 60){
+    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le record Ao5 est ${wrA}.`);
+    	}
+    	
     }
+    else if (cmd === 'ranking') return;
 }
 Bot.on('ready', () => {
 
@@ -31,16 +44,9 @@ Bot.on('message', msg  => {
 	let msgSimple = command.split(" ")
 	let cmd = msgSimple[0]
 	let args = msgSimple.slice(1)
-	
-	msg.channel.send('La commande est ' + cmd)
-	msg.channel.send('Les arguments sont ' + args)
 
 	if (cmd === 'wr'){
-		if (args[0] === '33'){
-			requestWCA(cmd, args);
-			msg.channel.send(wr33);
-		}
-		else if (args[0] !== '33') return;
+			requestWCA(cmd, args, msg);
 	}
 
 	else if (cmd === 'ranking'){
@@ -48,7 +54,6 @@ Bot.on('message', msg  => {
 		let single = args[1]
 		let top = args[2]
 
-		// partie à compléter par la requête wca
 		msg.channel.send(`Vous voules le top ${top} ${single} de l'event : ${event}`);
 	}
 
