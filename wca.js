@@ -6,15 +6,35 @@ let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 const requestWCA = async(cmd, args, msg) => {
 	if (cmd === 'wr'){
-		if (args[0] === 'mbld') return;
+
 		let event = events[args[0]];
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
     	const res = await fetch(url);
     	const json = await res.json();
     	const wr = await json.world_records[event];
+    	
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
-    	if (wrS > 60 || wrA >60){
+    	
+    	if (args[0] === 'fmc'){
+    		const wrS = wr['single'];
+    		const wrA = Number(wr['average'])/100;
+    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le wr average est ${wrA}`);
+
+    	}
+    	else if (args[0] === 'mbld'){
+			let temps = ((Math.floor(Number(wr['single']) / 100) % 1e5) * 100)/100;
+			let minutes = Math.floor(temps/60);
+			let seconds = Math.round(((temps/60) - minutes)*60);
+			let cubes =(Math.floor(Number(wr['single']))%1e5);
+			let totalCubes = Math.floor((cubes%1e3)/10);
+			let fail = (Number(wr['single']))%10;
+			let success = totalCubes - fail;
+			msg.channel.send(`le wr de ${args[0]} est de ${success}/${totalCubes} cubes en ${minutes}:${seconds}.`)
+			console.log(success, totalCubes, fail);
+
+		}    	
+    	else if (wrS > 60 || wrA >60){
     		let minutesS = Math.floor(wrS/60);
     		let secondsS = Math.round((wrS%60)*100);
     		let secondsSF = secondsS/100;
@@ -54,24 +74,24 @@ const prefix = "%";
 
 Bot.on('message', msg  => {
 	console.log('Bonjour');
+
 	if (msg.author.bot) return;
 	if (msg.content.startsWith(prefix)) {	
-	let command = msg.content.substring(1)
-	let msgSimple = command.split(" ")
-	let cmd = msgSimple[0]
-	let args = msgSimple.slice(1)
+		let command = msg.content.substring(1)
+		let msgSimple = command.split(" ")
+		let cmd = msgSimple[0]
+		let args = msgSimple.slice(1)
 
-	if (cmd === 'wr'){
+		if (cmd === 'wr'){
 			requestWCA(cmd, args, msg);
-	}
+		}
 
-	else if (cmd === 'ranking'){
-		let event = args[0]
-		let single = args[1]
-		let top = args[2]
+		else if (cmd === 'ranking'){
+			msg.channel.send('Oups, cette commande est encore en développement');
+			return;
+			requestWCA(cmd, args, msg);
 
-		msg.channel.send(`Vous voules le top ${top} ${single} de l'event : ${event}`);
-	}
+		}
 
 
 	}
