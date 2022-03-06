@@ -23,7 +23,7 @@ const requestWCA = async(cmd, args, msg, avg) => {
 
     		const wrS = wr['single'];
     		const wrA = Number(wr['average'])/100;
-    		msg.channel.send(`Le wr :single: de ${args[0]} est ${wrS} et le wr :avg:${avg} est ${wrA}`);
+    		msg.channel.send(`Le wr :single: de ${args[0]} est ${wrS} et le wr ${avg} est ${wrA}`);
 
     	}
     	else if (args[0] === 'mbld'){
