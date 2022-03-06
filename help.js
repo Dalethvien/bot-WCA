@@ -5,7 +5,7 @@ function help (cmd, msg){
 
 
 function events (cmd, msg){
-	msg.channel.send("Liste des events: '22', '33', '44', '55', '66', '77', 'oh', '3bld', 'fmc', '4bld', '5bld', 'mega', 'pyra', 'feet', 'clock', 'skweb', 'sq1', 'mbld'.")
+	msg.channel.send("Liste des events: '22', '33', '44', '55', '66', '77', 'oh', '3bld', 'fmc', '4bld', '5bld', 'mega', 'pyra', 'feet', 'clock', 'skewb', 'sq1', 'mbld'.")
 }
 export {events}
 export {help};
