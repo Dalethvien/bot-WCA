@@ -33,7 +33,6 @@ const requestWCA = async(cmd, args, msg) => {
 			let fail = (Number(wr['single']))%10;
 			let success = totalCubes - fail;
 			msg.channel.send(`le wr de ${args[0]} est de ${success}/${totalCubes} cubes en ${minutes}:${seconds}.`)
-			console.log(success, totalCubes, fail);
 
 		}    	
     	else if (wrS > 60 || wrA >60){
