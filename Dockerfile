@@ -4,11 +4,10 @@ ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-COPY package.json .
-COPY package-lock.json .
+COPY package.json package-lock.json .
 
 RUN npm i
 
-COPY error.js wca.js help.js param.js requestWCA.js .
+COPY error.js help.js param.js requestWCA.js wca.js .
 
 CMD ["node", "wca.js"]
