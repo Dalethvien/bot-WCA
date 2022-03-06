@@ -9,8 +9,6 @@ COPY package-lock.lock .
 
 RUN npm i
 
-COPY app app/
-COPY index.js .
-COPY init.js .
+COPY error.js wca.js help.js param.js requestWCA.js /
 
-CMD ["node", "index.js"]
+CMD ["node", "wca.js"]
