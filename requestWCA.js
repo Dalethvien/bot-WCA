@@ -2,7 +2,7 @@ import {events} from './param.js';
 import fetch from 'node-fetch';
 import {single} from './param.js';
 
-const requestWCA = async(cmd, args, msg) => {
+const requestWCA = async(cmd, args, msg, avg) => {
 	if (cmd === 'wr'){
 		let list = Object.keys(events);
 		if (!list.includes(args[0])){
@@ -18,11 +18,12 @@ const requestWCA = async(cmd, args, msg) => {
     	
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
-    	
+
     	if (args[0] === 'fmc'){
+
     		const wrS = wr['single'];
     		const wrA = Number(wr['average'])/100;
-    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le wr average est ${wrA}`);
+    		msg.channel.send(`Le wr :single: de ${args[0]} est ${wrS} et le wr :avg:${avg} est ${wrA}`);
 
     	}
     	else if (args[0] === 'mbld'){
@@ -33,7 +34,7 @@ const requestWCA = async(cmd, args, msg) => {
 			let totalCubes = Math.floor((cubes%1e3)/10);
 			let fail = (Number(wr['single']))%10;
 			let success = totalCubes - fail;
-			msg.channel.send(`le wr de ${args[0]} est de ${success}/${totalCubes} cubes en ${minutes}:${seconds}.`)
+			msg.channel.send(`le wr de ${args[0]} est de ${success}/${totalCubes} cubes en ${minutes}:${seconds}.`);
 
 		}    	
     	else if (wrS > 60 || wrA >60){
@@ -47,21 +48,21 @@ const requestWCA = async(cmd, args, msg) => {
 
     		if (secondsSF < 10){
     			if (secondsAF < 10){
-    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    				msg.channel.send(`Le wr :single: de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
     			}
     			else if (secondsAF > 10){
-    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    				msg.channel.send(`Le wr :single: de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
     			}
     		}
     		else if (secondsSF >10 && secondsAF<10){
-    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    			msg.channel.send(`Le wr :single: de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
     		}
     		else if (secondsSF>10 && secondsAF>10){
-    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    			msg.channel.send(`Le wr :single: de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
     		}
     	}
     	else if (wrS < 60){
-    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le record Ao5 est ${wrA}.`);
+    		msg.channel.send(`Le wr :single: de ${args[0]} est ${wrS} et le record ${avg} est ${wrA}.`);
     	}
     	
     }
