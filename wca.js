@@ -13,7 +13,6 @@ Bot.on('ready', () => {
 const prefix = "%";
 
 Bot.on('message', msg  => {
-	console.log('Bonjour');
 
 	if (msg.author.bot) return;
 	if (msg.content.startsWith(prefix)) {	
