@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import {requestWCA} from './requestWCA.js';
 import {help} from './help.js';
 import {events} from './help.js';
+import {error} from './error.js'
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 Bot.on('ready', () => {
@@ -21,13 +22,33 @@ Bot.on('message', msg  => {
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd === 'wr'){
+		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events'){
+			error(cmd, msg);
+			return;
+		}
+
+		else if (cmd === 'wr'){
 			requestWCA(cmd, args, msg);
+			if (args.length !==1){
+				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
+				return;
+			}
+			else if (args.lenght === 1){
+				requestWCA(cmd, args, msg);
+			}
 		}
 
 		else if (cmd === 'ranking'){
 			msg.channel.send('Oups, cette commande est encore en développement');
 			return;
+			if (args.lenght >3 || isNaN(args[1]) || isNaN(args[3])){
+				msg.channel.send("Donnez trois paramètre avec la commande 'ranking'. \n Les paramètres doit être du style '%ranking [event] [single/average] [x]'. \n Pour la list d'events '%events'. \n x représente le top x que vous voulez");
+				return;
+			}
+			else if ( args[2] !== 'single' && args[2] !== 'average'){
+				msg.channel.send("Donnez trois paramètre avec la commande 'ranking'. \n Les paramètres doit être du style '%ranking [event] [single/average] [x]'. \n Pour la list d'events '%events'. \n x représente le top x que vous voulez");
+				return;
+			}
 			requestWCA(cmd, args, msg);
 
 		}

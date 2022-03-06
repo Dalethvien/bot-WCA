@@ -4,6 +4,10 @@ import {single} from './param.js';
 
 const requestWCA = async(cmd, args, msg) => {
 	if (cmd === 'wr'){
+		let list = Object.keys(events);
+		if (!list.contains(args[0])){
+			msg.channel.send("L'event doit faire partie de la liste d'events existant ! \nSi vous voulez accèder à la liste '%events'")
+		}
 
 		let event = events[args[0]];
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
