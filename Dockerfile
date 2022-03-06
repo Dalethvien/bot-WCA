@@ -5,7 +5,7 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 COPY package.json .
-COPY package-lock.lock .
+COPY package-lock.js .
 
 RUN npm i
 
