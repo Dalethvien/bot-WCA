@@ -5,7 +5,7 @@ import {single} from './param.js';
 const requestWCA = async(cmd, args, msg) => {
 	if (cmd === 'wr'){
 		let list = Object.keys(events);
-		if (!list.contains(args[0])){
+		if (!list.includes(args[0])){
 			msg.channel.send("L'event doit faire partie de la liste d'events existant ! \nSi vous voulez accèder à la liste '%events'")
 		}
 
