@@ -9,6 +9,6 @@ COPY package-lock.json .
 
 RUN npm i
 
-COPY error.js wca.js help.js param.js requestWCA.js /
+COPY error.js wca.js help.js param.js requestWCA.js .
 
 CMD ["node", "wca.js"]
