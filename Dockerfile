@@ -13,4 +13,4 @@ COPY app app/
 COPY index.js .
 COPY init.js .
 
-CMD ["npm", "run", "prod"]
+CMD ["node", "index.js"]
