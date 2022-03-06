@@ -31,9 +31,7 @@ Bot.on('message', msg  => {
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
 				return;
 			}
-			else if (args.lenght === 1){
 				requestWCA(cmd, args, msg);
-			}
 		}
 
 		else if (cmd === 'ranking'){
