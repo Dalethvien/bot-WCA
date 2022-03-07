@@ -27,20 +27,12 @@ Bot.on('messageCreate', msg  => {
 		}
 
 		else if (cmd === 'wr'){
-			let event = events[args[0]]
 			if (args.length !==1){
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
 				return;
 			}
-			if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
-    		let avg = 'Mo3';
-    		
-    	}
-    	else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
-    		let avg = ':avg:5';
-    		requestWCA(cmd, args, msg, avg);
-    	}
-	}
+				requestWCA(cmd, args, msg);
+		}
 
 		else if (cmd === 'ranking'){
 			msg.channel.send('Oups, cette commande est encore en développement');
