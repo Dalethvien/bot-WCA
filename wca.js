@@ -27,12 +27,21 @@ Bot.on('messageCreate', msg  => {
 		}
 
 		else if (cmd === 'wr'){
+			let event = events[args[0]]
 			if (args.length !==1){
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
 				return;
 			}
-				requestWCA(cmd, args, msg);
-		}
+			if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
+    		let avg = 'Mo3';
+    		requestWCA(cmd, args, msg, avg);
+    		
+    	}
+    	else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
+    		let avg = '<:AVG:369418969351716864>';
+    		requestWCA(cmd, args, msg, avg);
+    	}
+	}
 
 		else if (cmd === 'ranking'){
 			msg.channel.send('Oups, cette commande est encore en développement');

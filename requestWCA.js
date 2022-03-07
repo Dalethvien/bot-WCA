@@ -2,11 +2,13 @@ import {events} from './param.js';
 import fetch from 'node-fetch';
 import {single} from './param.js';
 
-const requestWCA = async(cmd, args, msg) => {
+const requestWCA = async(cmd, args, msg, avg) => {
 	if (cmd === 'wr'){
+		let single = '<:Single:369420530098372608>';
 		let list = Object.keys(events);
 		if (!list.includes(args[0])){
 			msg.channel.send("L'event doit faire partie de la liste d'events existant ! \nSi vous voulez accèder à la liste '%events'")
+			return;
 		}
 
 		let event = events[args[0]];
@@ -17,11 +19,12 @@ const requestWCA = async(cmd, args, msg) => {
     	
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
-    	
+
     	if (args[0] === 'fmc'){
+
     		const wrS = wr['single'];
     		const wrA = Number(wr['average'])/100;
-    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le wr average est ${wrA}`);
+    		msg.channel.send(`Le wr ${single} de ${args[0]} est ${wrS} et le wr ${avg} est ${wrA}`);
 
     	}
     	else if (args[0] === 'mbld'){
@@ -46,21 +49,21 @@ const requestWCA = async(cmd, args, msg) => {
 
     		if (secondsSF < 10){
     			if (secondsAF < 10){
-    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    				msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
     			}
     			else if (secondsAF > 10){
-    				msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:0${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    				msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
     			}
     		}
     		else if (secondsSF >10 && secondsAF<10){
-    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:0${secondsAF}.`);
+    			msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
     		}
     		else if (secondsSF>10 && secondsAF>10){
-    			msg.channel.send(`Le wr single de ${args[0]} est ${minutesS}:${secondsSF} et le record Ao5 est ${minutesA}:${secondsAF}.`);
+    			msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
     		}
     	}
     	else if (wrS < 60){
-    		msg.channel.send(`Le wr single de ${args[0]} est ${wrS} et le record Ao5 est ${wrA}.`);
+    		msg.channel.send(`Le wr ${single} de ${args[0]} est ${wrS} et le record ${avg} est ${wrA}.`);
     	}
     	
     }
