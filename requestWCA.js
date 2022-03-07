@@ -24,7 +24,7 @@ const requestWCA = async(cmd, args, msg, avg) => {
 
     		const wrS = wr['single'];
     		const wrA = Number(wr['average'])/100;
-    		msg.channel.send(`Le wr ${single} de ${args[0]} est ${wrS} et le wr ${avg} est ${wrA}`);
+    		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
 
     	}
     	else if (args[0] === 'mbld'){
@@ -35,7 +35,7 @@ const requestWCA = async(cmd, args, msg, avg) => {
 			let totalCubes = Math.floor((cubes%1e3)/10);
 			let fail = (Number(wr['single']))%10;
 			let success = totalCubes - fail;
-			msg.channel.send(`le wr de ${args[0]} est de ${success}/${totalCubes} cubes en ${minutes}:${seconds}.`);
+			msg.channel.send(`${success}/${totalCubes} cubes en ${minutes}:${seconds}`);
 
 		}    	
     	else if (wrS > 60 || wrA >60){
@@ -49,21 +49,21 @@ const requestWCA = async(cmd, args, msg, avg) => {
 
     		if (secondsSF < 10){
     			if (secondsAF < 10){
-    				msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
+    				msg.channel.send(`${single}${minutesS}:0${secondsSF} \n${avg}${minutesA}:0${secondsAF}`);
     			}
     			else if (secondsAF > 10){
-    				msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:0${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
+    				msg.channel.send(`${single}${minutesS}:0${secondsSF} \n${avg}${minutesA}:${secondsAF}`);
     			}
     		}
     		else if (secondsSF >10 && secondsAF<10){
-    			msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:0${secondsAF}.`);
+    			msg.channel.send(`${single}${minutesS}:${secondsSF} \n${avg}${minutesA}:0${secondsAF}`);
     		}
     		else if (secondsSF>10 && secondsAF>10){
-    			msg.channel.send(`Le wr ${single} de ${args[0]} est ${minutesS}:${secondsSF} et le record ${avg} est ${minutesA}:${secondsAF}.`);
+    			msg.channel.send(` ${single}${minutesS}:${secondsSF} \n${avg}${minutesA}:${secondsAF}`);
     		}
     	}
     	else if (wrS < 60){
-    		msg.channel.send(`Le wr ${single} de ${args[0]} est ${wrS} et le record ${avg} est ${wrA}.`);
+    		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
     	}
     	
     }
