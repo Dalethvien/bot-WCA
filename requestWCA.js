@@ -26,7 +26,6 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     	const res = await fetch(url);
     	const json = await res.json();
     	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[nat])[event];
-    	console.log(wr);
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
 
@@ -53,12 +52,10 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     		let minutesS = Math.floor(wrS/60);
     		let secondsS = Math.round((wrS%60)*100);
     		let secondsSF = (secondsS/100).toFixed(2);
-    		console.log(secondsSF);
 
     		var minutesA = isNaN(wrA) === true ? "" : Math.floor(wrA/60);
     		let secondsA = Math.round((wrA%60)*100);
     		var secondsAF = isNaN(wrA)=== true ? "DNF" : secondsA/100;
-    		console.log(minutesA, secondsAF);
 
     		if (secondsSF < 10){
     			if (secondsA < 1000){
@@ -79,7 +76,6 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     		}
     	}
     	else if (wrS < 60){
-    		console.log(wrS);
     		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
     	}
     	

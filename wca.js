@@ -3,6 +3,7 @@ import {requestWCA} from './requestWCA.js';
 import {help} from './help.js';
 import {events} from './help.js';
 import {error} from './error.js'
+import {continent} from './help.js';
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 import {continents} from './param.js';
 
@@ -22,7 +23,7 @@ Bot.on('messageCreate', msg  => {
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr'){
+		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'continent'){
 			error(cmd, msg);
 			return;
 		}
@@ -46,7 +47,7 @@ Bot.on('messageCreate', msg  => {
     		let event = events[args[0]]
     		let cont = continents[args[1]];
     			if (args.length !== 2){
-    				msg.channel.send("Donnez un deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste de paramètres '%events'. \n Pour la liste des continents '%continents'.");
+    				msg.channel.send("Donnez un deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste de paramètres '%events'. \n Pour la liste des continents '%continent'.");
     				return;
     			}
     		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
@@ -78,6 +79,9 @@ Bot.on('messageCreate', msg  => {
 		}
 		else if (cmd === 'events'){
 			events(cmd, msg);
+		}
+		else if (cmd ==='continent'){
+			continent(cmd, msg);
 		}
 
 
