@@ -4,6 +4,7 @@ import {help} from './help.js';
 import {events} from './help.js';
 import {error} from './error.js'
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
+import {continents} from './param.js';
 
 Bot.on('ready', () => {
 
@@ -16,33 +17,48 @@ Bot.on('messageCreate', msg  => {
 
 	if (msg.author.bot) return;
 	if (msg.content.startsWith(prefix)) {	
-		let command = msg.content.substring(1)
+		let command = msg.content.substring(1).toLowerCase()
 		let msgSimple = command.split(" ")
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events'){
+		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr'){
 			error(cmd, msg);
 			return;
 		}
-
 		else if (cmd === 'wr'){
 			let event = events[args[0]]
 			if (args.length !==1){
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
 				return;
 			}
-			if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
+			else  if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
     		let avg = 'Mo3';
     		requestWCA(cmd, args, msg, avg);
     		
     	}
-    	else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
-    		let avg = '<:AVG:369418969351716864>';
-    		requestWCA(cmd, args, msg, avg);
+    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
+    			let avg = '<:AVG:369418969351716864>';
+    			requestWCA(cmd, args, msg, avg);
+    		}
+		}
+		else if (cmd === 'cr'){
+    		let event = events[args[0]]
+    		let cont = continents[args[1]];
+    			if (args.length !== 2){
+    				msg.channel.send("Donnez un deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste de paramètres '%events'. \n Pour la liste des continents '%continents'.");
+    				return;
+    			}
+    		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
+    		let avg = 'Mo3';
+    		requestWCA(cmd, args, msg, avg, cont);
     	}
-	}
 
+    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
+    		let avg = '<:AVG:369418969351716864>';
+    		requestWCA(cmd, args, msg, avg, cont);
+    		}
+    	}
 		else if (cmd === 'ranking'){
 			msg.channel.send('Oups, cette commande est encore en développement');
 			return;
