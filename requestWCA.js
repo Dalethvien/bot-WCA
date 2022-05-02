@@ -28,7 +28,6 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[nat])[event];
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
-    	console.log(wrS, wrA);
 
     	if (args[0] === 'fmc'){
 
@@ -50,7 +49,6 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
 		}    	
     	var minuteS = Math.floor(wrS/60) === 0 ? '' : Math.floor(wrS/60).toString()+':';
-    	console.log(Math.floor(wrS/60));
     	var secondS = Math.round(wrS-(Math.floor(wrS/60)*60));
     	var csS = Math.round((wrS- Math.floor(wrS))*100);
     	
