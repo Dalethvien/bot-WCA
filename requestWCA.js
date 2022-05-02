@@ -4,6 +4,17 @@ import {single} from './param.js';
 import {continents} from './param.js';
 import {cmd_record} from './param.js';
 
+const centisecondsToTime = (time) => {
+	const t = time/100;
+	const min = Math.floor(t / 60);
+ 	let s = (t - min * 60).toFixed(2);
+ 	if (min > 0 && s.length === 4) {
+		s = "0" + s;
+  	}
+
+	return `${min ? min + ":" : ""}${s}`;
+	};
+
 
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 		let single = '<:Single:369420530098372608>';
@@ -26,8 +37,8 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     	const res = await fetch(url);
     	const json = await res.json();
     	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[nat])[event];
-    	const wrS = Number(wr['single'])/100;
-    	const wrA = Number(wr['average'])/100;
+    	const wrS = Number(wr['single']);
+    	const wrA = Number(wr['average']);
 
     	if (args[0] === 'fmc'){
 
@@ -50,28 +61,10 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 			return;
 
 		}    	
-    	var minuteS = Math.floor(wrS/60) === 0 ? '' : Math.floor(wrS/60).toString()+':';
-    	var secondS = Math.floor(wrS-(Math.floor(wrS/60)*60));
-    	var csS = Math.round((wrS- Math.floor(wrS))*100);
-    	
-    	if (secondS < 10 && secondS !== 0 && minuteS !== '' ){
-    		secondS = `0${secondS}`;
-    	}
-    	if (csS <10 && csS !== 0){
-    		csS = `0${csS}`;
-    	}
-
-    	var minuteA = Math.floor(wrA/60) === 0 ? '' : Math.floor(wrA/60).toString()+':';
-    	var secondA = Math.floor(wrA-(Math.floor(wrA/60)*60));
-    	var csA = Math.round((wrA - Math.floor(wrA))*100);
-    
-    	if (secondA < 10 && secondA !== 0 && minuteA !== ''){
-    		secondA = `0${secondA}`;
-    	}
-    	if (csA <10 && csA !== 0){
-    		csA = `0${csA}`;
-    	}
-    	msg.channel.send(`${single}${minuteS}${secondS}.${csS} \n${avg}${minuteA}${secondA}.${csA}`);
+		
+	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
+	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
+    msg.channel.send(`${single}${singleF} \n${avg}${avgF}`);
 
     	
     	
