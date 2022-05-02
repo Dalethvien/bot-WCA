@@ -34,6 +34,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     		const wrS = wr['single'];
     		const wrA = Number(wr['average'])/100;
     		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
+    		return;
 
     	}
     	else if (args[0] === 'mbld'){
@@ -46,10 +47,11 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 			const success = fail + solved;
 			const totalCubes = fail + success;
 			msg.channel.send(`${success}/${totalCubes} cubes en ${minutes}:${seconds}`);
+			return;
 
 		}    	
     	var minuteS = Math.floor(wrS/60) === 0 ? '' : Math.floor(wrS/60).toString()+':';
-    	var secondS = Math.round(wrS-(Math.floor(wrS/60)*60));
+    	var secondS = Math.floor(wrS-(Math.floor(wrS/60)*60));
     	var csS = Math.round((wrS- Math.floor(wrS))*100);
     	
     	if (secondS < 10 && secondS !== 0 && minuteS !== '' ){
