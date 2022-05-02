@@ -15,7 +15,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 		}
 		else if (cmd === 'cr'){
 			 if (!conts.includes(args[1])){
-				msg.channel.send("Le continent doit faire partie de la liste de continents existant ! \n Si vous voulez accèder à la liste '%continents'")
+				msg.channel.send("Le continent doit faire partie de la liste de continents existant ! \n Si vous voulez accèder à la liste '%continent'")
 				return;
 			}
 		}
@@ -28,6 +28,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
     	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[nat])[event];
     	const wrS = Number(wr['single'])/100;
     	const wrA = Number(wr['average'])/100;
+    	console.log(wrS, wrA);
 
     	if (args[0] === 'fmc'){
 
@@ -48,38 +49,33 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 			msg.channel.send(`${success}/${totalCubes} cubes en ${minutes}:${seconds}`);
 
 		}    	
-    	else if (wrS > 60 || wrA >60){
-    		let minutesS = Math.floor(wrS/60);
-    		let secondsS = Math.round((wrS%60)*100);
-    		let secondsSF = (secondsS/100).toFixed(2);
-
-    		var minutesA = isNaN(wrA) === true ? "" : Math.floor(wrA/60);
-    		let secondsA = Math.round((wrA%60)*100);
-    		var secondsAF = isNaN(wrA)=== true ? "DNF" : secondsA/100;
-
-    		if (secondsSF < 10){
-    			if (secondsA < 1000){
-    				msg.channel.send(`${single}${minutesS}:0${secondsSF} \n${avg}${minutesA}:0${secondsAF}`);
-    			}
-    			else if (secondsA > 1000){
-    				msg.channel.send(`${single}${minutesS}:0${secondsSF} \n${avg}${minutesA}:${secondsAF}`);
-    			}
-    		}
-    		else if (secondsSF >10 && secondsA<1000){
-    			msg.channel.send(`${single}${minutesS}:${secondsSF} \n${avg}${minutesA}:0${secondsAF}`);
-    		}
-    		else if (secondsSF>10 && secondsA>1000){
-    			msg.channel.send(` ${single}${minutesS}:${secondsSF} \n${avg}${minutesA}:${secondsAF}`);
-    		}
-    		else if (secondsAF === "DNF"){
-    			msg.channel.send(`${single}${minutesS}:${secondsSF} \n${avg}${secondsAF}`);
-    		}
-    	}
-    	else if (wrS < 60){
-    		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
-    	}
+    	var minuteS = Math.floor(wrS/60) === 0 ? '' : Math.floor(wrS/60).toString()+':';
+    	console.log(Math.floor(wrS/60));
+    	var secondS = Math.round(wrS-(Math.floor(wrS/60)*60));
+    	var csS = Math.round((wrS- Math.floor(wrS))*100);
     	
-    else if (cmd === 'ranking') return;
+    	if (secondS < 10 && secondS !== 0 && minuteS !== '' ){
+    		secondS = `0${secondS}`;
+    	}
+    	if (csS <10 && csS !== 0){
+    		csS = `0${csS}`;
+    	}
+
+    	var minuteA = Math.floor(wrA/60) === 0 ? '' : Math.floor(wrA/60).toString()+':';
+    	var secondA = Math.floor(wrA-(Math.floor(wrA/60)*60));
+    	var csA = Math.round((wrA - Math.floor(wrA))*100);
+    
+    	if (secondA < 10 && secondA !== 0 && minuteA !== ''){
+    		secondA = `0${secondA}`;
+    	}
+    	if (csA <10 && csA !== 0){
+    		csA = `0${csA}`;
+    	}
+    	msg.channel.send(`${single}${minuteS}${secondS}.${csS} \n${avg}${minuteA}${secondA}.${csA}`);
+
+    	
+    	
+    if (cmd === 'ranking') return;
 }
 
 export {requestWCA};

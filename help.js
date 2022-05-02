@@ -1,5 +1,5 @@
 function help (cmd, msg){
-	msg.channel.send("Ce bot vous permets d'obtenir les wr des events wca avec la commande '%wr'. \n pour la liste des events '%events' \n pour la liste des continents disponibles '%continent' ");
+	msg.channel.send("Ce bot vous permet d'obtenir les WR et CR des différents events de speedcubing, respectivement avec les commandes '%wr' et '%cr' ! \n Pour les WR : %wr *event* \n Pour les CR : %cr *event* *continent* \n Pour la liste des events : %events \n Pour la liste des continents : %continent");
 	
 }
 
