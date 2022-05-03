@@ -21,10 +21,11 @@ const centisecondsToTime = (time) => {
 
 	return `${min ? min + ":" : ""}${s}`;
 	};
-const Embed = (single, avg, singleF, avgF, msg, cmd) =>{
+
+const Embed = (single, avg, singleF, avgF, msg, title) =>{
 	const exampleEmbed = new MessageEmbed()
 	.setColor('#ffbf00')
-	.setTitle(cmd)
+	.setTitle(title)
 	.addFields(
 	{name:single, value: singleF},
 	{name:avg, value:avgF })
@@ -33,8 +34,19 @@ const Embed = (single, avg, singleF, avgF, msg, cmd) =>{
 
 }
 
+const embedMbld = (title, msg, result, single) =>{
+	const exampleEmbedMbld = new MessageEmbed()
+	 .setColor('#ffbf00')
+	 .setTitle(title)
+	 .addFields(
+	 	{name:single, value:result})
+	 msg.channel.send({embeds: [exampleEmbedMbld]});
+}
+
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
-	
+
+		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd_record[cmd];
+		console.log(title);
 		let single = "<:Single:369420530098372608>";
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
@@ -60,9 +72,9 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
     	if (args[0] === 'fmc'){
 
-    		const wrS = wr['single'];
-    		const wrA = Number(wr['average'])/100;
-    		msg.channel.send(`${single}${wrS} \n${avg}${wrA}`);
+    		const singleF = wr['single'].toString();
+    		const avgF = (Number(wr['average'])/100).toString();
+    		let test = Embed(single, avg, singleF, avgF, msg, title);
     		return;
 
     	}
@@ -75,14 +87,15 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 			const solved = 99 - (Math.floor(value/1e7)%100);
 			const success = fail + solved;
 			const totalCubes = fail + success;
-			msg.channel.send(`${success}/${totalCubes} cubes en ${minutes}:${seconds}`);
+			let result = (`${success}/${totalCubes} cubes en ${minutes}:${seconds}`).toString();
+			let test = embedMbld(title, msg, result, single);
 			return;
 
 		}    	
 		
 	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
 	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    let test = Embed(single, avg, singleF, avgF, msg, cmd);
+    let test = Embed(single, avg, singleF, avgF, msg, title);
 
 
     	
