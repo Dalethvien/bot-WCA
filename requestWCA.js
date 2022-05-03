@@ -4,6 +4,13 @@ import {single} from './param.js';
 import {continents} from './param.js';
 import {cmd_record} from './param.js';
 
+import {MessageEmbed} from 'discord.js';
+
+// inside a command, event listener, etc.
+
+
+
+
 const centisecondsToTime = (time) => {
 	const t = time/100;
 	const min = Math.floor(t / 60);
@@ -14,10 +21,21 @@ const centisecondsToTime = (time) => {
 
 	return `${min ? min + ":" : ""}${s}`;
 	};
+const Embed = (single, avg, singleF, avgF, msg, cmd) =>{
+	const exampleEmbed = new MessageEmbed()
+	.setColor('#ffbf00')
+	.setTitle(cmd)
+	.addFields(
+	{name:single, value: singleF},
+	{name:avg, value:avgF })
 
+	msg.channel.send({ embeds: [exampleEmbed] });
+
+}
 
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
-		let single = '<:Single:369420530098372608>';
+	
+		let single = "<:Single:369420530098372608>";
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
 		if (!list.includes(args[0])){
@@ -64,7 +82,8 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 		
 	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
 	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    msg.channel.send(`${single}${singleF} \n${avg}${avgF}`);
+    let test = Embed(single, avg, singleF, avgF, msg, cmd);
+
 
     	
     	
