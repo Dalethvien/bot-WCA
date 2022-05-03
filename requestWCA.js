@@ -45,7 +45,7 @@ const embedMbld = (title, msg, result, single) =>{
 
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
-		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd_record[cmd];
+		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd_record[cmd] + " " + args[0];
 		console.log(title);
 		let single = "<:Single:369420530098372608>";
 		let list = Object.keys(events);
