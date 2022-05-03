@@ -32,16 +32,16 @@ const continents ={
 	"oc": "_Oceania"
 }
 const cmd_record ={
-	"wr": "world records",
+	"wr": "World Record",
 	"cr": {
-		"eu" : "European record",
-		"na" : "North America record",
-		"sa" : "South America record",
-		"as" : "Asian record",
-		"oc" : "Oceanian record",
-		"af" : "African record"
+		"eu" : "European Record",
+		"na" : "North America Record",
+		"sa" : "South America Record",
+		"as" : "Asian Record",
+		"oc" : "Oceanian Record",
+		"af" : "African Record"
 	},
-	"nr": "national records"
+	"nr": "National Record"
 }
 export {events};
 export {single};

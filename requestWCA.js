@@ -27,8 +27,9 @@ const Embed = (single, avg, singleF, avgF, msg, title) =>{
 	.setColor('#ffbf00')
 	.setTitle(title)
 	.addFields(
-	{name:single, value: singleF},
-	{name:avg, value:avgF })
+	{name:single + " " + singleF, value:"឵឵឵"}, //឵឵឵ is a special character for a false space in discord
+	{name : avg + " " + avgF, value:"឵឵឵"}
+	)
 
 	msg.channel.send({ embeds: [exampleEmbed] });
 
@@ -45,8 +46,8 @@ const embedMbld = (title, msg, result, single) =>{
 
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
-		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd_record[cmd] + " " + args[0];
-		console.log(title);
+		var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
+		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
 		let single = "<:Single:369420530098372608>";
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
