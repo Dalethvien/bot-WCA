@@ -3,7 +3,6 @@ import fetch from 'node-fetch';
 import {single} from './param.js';
 import {continents} from './param.js';
 import {cmd_record} from './param.js';
-import * as cheerio from 'cheerio';
 
 import {MessageEmbed} from 'discord.js';
 
