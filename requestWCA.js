@@ -3,11 +3,29 @@ import fetch from 'node-fetch';
 import {single} from './param.js';
 import {continents} from './param.js';
 import {cmd_record} from './param.js';
+import * as cheerio from 'cheerio';
 
 import {MessageEmbed} from 'discord.js';
 
 // inside a command, event listener, etc.
 
+const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') =>{
+		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
+		var region = cmd === 'wr' ? '&region=world' : '&region='+ continents[args[1]];
+		let pageWcaFinal = pageWca + events[args[0]] + region;
+
+		const request = await fetch(pageWcaFinal);
+		const requestF = await request.text();
+
+		let name = requestF.match(patternName);
+		var nameF = name === null ? 'N/A' : name[1];
+
+		let flag= requestF.match(patternFlag);
+		var num = average === 'True' ? 1 : 0
+		let flagF = flag[num] === undefined ? 'N/A' :flag[num].toString().match(/(?<=flag-icon-|fi-)[a-z]{2}/g)[0];
+
+		return([nameF, flagF]);
+}
 
 
 
@@ -22,13 +40,15 @@ const centisecondsToTime = (time) => {
 	return `${min ? min + ":" : ""}${s}`;
 	};
 
-const Embed = (single, avg, singleF, avgF, msg, title) =>{
+const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg) =>{
+
 	const exampleEmbed = new MessageEmbed()
 	.setColor('#ffbf00')
 	.setTitle(title)
 	.addFields(
-	{name:single + " " + singleF, value:"឵឵឵"}, //឵឵឵ is a special character for a false space in discord
-	{name : avg + " " + avgF, value:"឵឵឵"}
+	{name:`${single} ${nameSingle} ${flagSingle}`, value : singleF},
+
+	{name: `${avg} ${nameAvg} ${flagAvg}`, value : avgF} //឵឵឵ is a special character for a false space in discord
 	)
 
 	msg.channel.send({ embeds: [exampleEmbed] });
@@ -46,6 +66,20 @@ const embedMbld = (title, msg, result, single) =>{
 
 const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
+		let patternNameSingle = /Single.+\n.+">(.+)<.a/;
+		let patternNameAvg = `Average.+\n.+">(.+)</a`;
+
+		let patternFlag = /country.+-(.+)"/g;
+
+		
+		let singleEmbed = await(nameAndFlag(patternNameSingle, patternFlag, args, cmd));
+		let nameSingle = singleEmbed[0];
+		let flagSingle = ':flag_' + singleEmbed[1].toString() + ':';
+		let average = 'True';
+		let avgEmbed = await(nameAndFlag(patternNameAvg, patternFlag, args, cmd, average));
+		let nameAvg = avgEmbed[0];
+		var flagAvg = avgEmbed[1] ==='N/A'? '' :':flag_' + avgEmbed[1].toString() + ':';
+		
 		var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
 		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
 		let single = "<:Single:369420530098372608>";
@@ -67,6 +101,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
     	const res = await fetch(url);
     	const json = await res.json();
+    	//console.log(res);
     	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[nat])[event];
     	const wrS = Number(wr['single']);
     	const wrA = Number(wr['average']);
@@ -96,7 +131,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 		
 	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
 	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    let test = Embed(single, avg, singleF, avgF, msg, title);
+    let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg);
 
 
     	
