@@ -54,12 +54,12 @@ const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flag
 
 }
 
-const embedMbld = (title, msg, result, single) =>{
+const embedMbld = (title, msg, result, single, nameSingle, flagSingle) =>{
 	const exampleEmbedMbld = new MessageEmbed()
 	 .setColor('#ffbf00')
 	 .setTitle(title)
 	 .addFields(
-	 	{name:single, value:result})
+	 	{name:`${single} ${nameSingle} ${flagSingle}`, value:result})
 	 msg.channel.send({embeds: [exampleEmbedMbld]});
 }
 
@@ -109,7 +109,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 
     		const singleF = wr['single'].toString();
     		const avgF = (Number(wr['average'])/100).toString();
-    		let test = Embed(single, avg, singleF, avgF, msg, title);
+    		let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg)
     		return;
 
     	}
@@ -123,7 +123,7 @@ const requestWCA = async(cmd, args, msg, avg, cont=1) => {
 			const success = fail + solved;
 			const totalCubes = fail + success;
 			let result = (`${success}/${totalCubes} cubes en ${minutes}:${seconds}`).toString();
-			let test = embedMbld(title, msg, result, single);
+			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle);
 			return;
 
 		}    	
