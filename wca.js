@@ -6,6 +6,7 @@ import {error} from './error.js'
 import {continent} from './help.js';
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 import {continents} from './param.js';
+import {isoCountries} from './param.js';
 
 Bot.on('ready', () => {
 
@@ -23,11 +24,12 @@ Bot.on('messageCreate', msg  => {
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'continent'){
+		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'nr' && cmd !== 'countries'){
 			error(cmd, msg);
 			return;
 		}
 		else if (cmd === 'wr'){
+			let pays = 1;
 			let event = events[args[0]]
 			if (args.length !==1){
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
@@ -40,26 +42,46 @@ Bot.on('messageCreate', msg  => {
     	}
     		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
     			let avg = '<:AVG:369418969351716864>';
-    			requestWCA(cmd, args, msg, avg);
+    			requestWCA(cmd, args, msg, avg, pays);
     		}
 		}
 		else if (cmd === 'cr'){
+			let pays = 1;
     		let event = events[args[0]]
     		let cont = continents[args[1]];
     			if (args.length !== 2){
-    				msg.channel.send("Donnez un deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste de paramètres '%events'. \n Pour la liste des continents '%continent'.");
+    				msg.channel.send("Donnez deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste des events '%events'. \n Pour la liste des continents '%continent'.");
     				return;
     			}
     		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
     		let avg = 'Mo3';
-    		requestWCA(cmd, args, msg, avg, cont);
+    		requestWCA(cmd, args, msg, avg, pays,  cont);
     	}
 
     		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
     		let avg = '<:AVG:369418969351716864>';
-    		requestWCA(cmd, args, msg, avg, cont);
+    		requestWCA(cmd, args, msg, avg, pays, cont);
     		}
     	}
+
+    	else if  (cmd === 'nr'){;
+    		let event = events[args[0]];
+    		let pays = isoCountries[args[1].toUpperCase()];
+    		if (args.length !== 2){
+    			msg.channel.send("Donnez deux paramètres avec la commande 'nr' ( 1) l'event, 2) le pays). \n Pour la liste des events '%events'. \n Pour la liste des pays '%countries'.");
+    			return;
+    		}
+    		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
+    		let avg = 'Mo3';
+    		requestWCA(cmd, args, msg, avg, pays);
+    	}
+
+    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
+    		let avg = '<:AVG:369418969351716864>';
+    		requestWCA(cmd, args, msg, avg, pays);
+    		}
+    	}
+
 		else if (cmd === 'ranking'){
 			msg.channel.send('Oups, cette commande est encore en développement');
 			return;
@@ -82,6 +104,9 @@ Bot.on('messageCreate', msg  => {
 		}
 		else if (cmd ==='continent'){
 			continent(cmd, msg);
+		}
+		else if (cmd ==='countries'){
+			msg.channel.send("Cette commande est en développement ! Pour le moment référez-vous aux codes iso2. ")
 		}
 
 
