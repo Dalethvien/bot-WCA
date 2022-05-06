@@ -14,5 +14,6 @@ COPY help.js .
 COPY param.js .
 COPY requestWCA.js .
 COPY wca.js .
+COPY recordPerson.js .
 
 CMD ["node", "wca.js"]
