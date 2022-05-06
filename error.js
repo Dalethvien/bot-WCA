@@ -1,4 +1,4 @@
 function error(cmd, msg){
-	msg.channel.send(`la commande ${cmd} n'est pas reconnu, pour plus d'infos : %help`)
+	msg.channel.send(`La commande ${cmd} n'est pas reconnue, pour plus d'infos : %help`)
 }
 export {error};

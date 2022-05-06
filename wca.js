@@ -31,7 +31,9 @@ Bot.on('messageCreate', msg  => {
 		}
 
 		else if (cmd === 'id'){
-			let avg = "truc";
+			if (args.length !== 2){
+				msg.channel.send("Donnez deux paramètres avec la commande 'id' ! L'event puis l'id wca de la personne. \n Pour la liste d'events' '%events'. ")
+			}
 			recordPerson(cmd, args, msg, avg);
 		}
 
@@ -39,7 +41,7 @@ Bot.on('messageCreate', msg  => {
 			let pays = 1;
 			let event = events[args[0]]
 			if (args.length !==1){
-				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste de paramètres '%events'");
+				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste d'events' '%events'");
 				return;
 			}
 			else  if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
