@@ -31,12 +31,11 @@ Bot.on('messageCreate', msg  => {
 		}
 
 		else if (cmd === 'id'){
-			msg.channel.send('bloup je suis là');
 			if (args.length !== 2){
 				msg.channel.send("Donnez deux paramètres avec la commande 'id' ! L'event puis l'id wca de la personne. \n Pour la liste d'events' '%events'. ");
 				return;
 			}
-			recordPerson(cmd, args, msg, avg);
+			recordPerson(cmd, args, msg);
 		}
 
 		else if (cmd === 'wr'){

@@ -24,7 +24,7 @@ const embedId = (event, singleF, averageF, name, flag, msg)=>{
 
 
 
-const recordPerson = async(cmd, args, msg, avg) =>{
+const recordPerson = async(cmd, args, msg) =>{
 
 	let list = Object.keys(events);
 	if (!list.includes(args[0])){
