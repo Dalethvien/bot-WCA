@@ -12,7 +12,6 @@ const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') 
 		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
 		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region='+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
 		let pageWcaFinal = pageWca + events[args[0]] + region;
-		console.log(pageWcaFinal);
 
 		const request = await fetch(pageWcaFinal);
 		const requestF = await request.text();
@@ -108,7 +107,7 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont=1,) => {
 		let url = 'https://www.worldcubeassociation.org/api/v0/records';
     	const res = await fetch(url);
     	const json = await res.json();
-    	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[pays]);    	console.log(wr);
+    	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[pays]);
     	var wr = wr === undefined ? wr : wr[event];
    		if (wr === undefined){
     		msg.channel.send("Il n'y a pas de record pour ce pays (ou tout du moins dans cet event) ! Ou alors la <:WCA:456059019677663233> ne le considère pas comme un territoire à part !");
