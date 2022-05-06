@@ -7,6 +7,7 @@ import {continent} from './help.js';
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 import {continents} from './param.js';
 import {isoCountries} from './param.js';
+import {recordPerson} from './recordPerson.js';
 
 Bot.on('ready', () => {
 
@@ -24,10 +25,16 @@ Bot.on('messageCreate', msg  => {
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'nr' && cmd !== 'countries'){
+		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'nr' && cmd !== 'countries' && cmd !=='id'){
 			error(cmd, msg);
 			return;
 		}
+
+		else if (cmd === 'id'){
+			let avg = "truc";
+			recordPerson(cmd, args, msg, avg);
+		}
+
 		else if (cmd === 'wr'){
 			let pays = 1;
 			let event = events[args[0]]

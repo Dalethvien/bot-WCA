@@ -150,3 +150,4 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont=1,) => {
 }
 
 export {requestWCA};
+export {centisecondsToTime};
