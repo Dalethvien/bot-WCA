@@ -8,6 +8,7 @@ let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 import {continents} from './param.js';
 import {isoCountries} from './param.js';
 import {recordPerson} from './recordPerson.js';
+import {requestWCAFeet} from './requestWCA.js';
 
 Bot.on('ready', () => {
 
@@ -38,6 +39,12 @@ Bot.on('messageCreate', msg  => {
 			recordPerson(cmd, args, msg);
 		}
 
+		else if (args[0] ==='feet'){
+			var pays = cmd === 'nr' ? isoCountries[args[1].toUpperCase()] : 1;
+			var cont = cmd ==='cr' ? continents[args[1]] : 1;
+			requestWCAFeet(cmd, args, msg, pays, cont);
+		}
+
 		else if (cmd === 'wr'){
 			let pays = 1;
 			let event = events[args[0]]
@@ -58,7 +65,7 @@ Bot.on('messageCreate', msg  => {
 		else if (cmd === 'cr'){
 			let pays = 1;
     		let event = events[args[0]]
-    		let cont = continents[args[1]];
+    		let cont = '_'+continents[args[1]];
     			if (args.length !== 2){
     				msg.channel.send("Donnez deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste des events '%events'. \n Pour la liste des continents '%continent'.");
     				return;

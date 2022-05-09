@@ -10,7 +10,7 @@ import {MessageEmbed} from 'discord.js';
 
 const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') =>{
 		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
-		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region='+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
+		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
 		let pageWcaFinal = pageWca + events[args[0]] + region;
 
 		const request = await fetch(pageWcaFinal);
@@ -40,7 +40,6 @@ const centisecondsToTime = (time) => {
 	};
 
 const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg) =>{
-
 	const exampleEmbed = new MessageEmbed()
 	.setColor('#ffbf00')
 	.setTitle(title)
@@ -63,7 +62,52 @@ const embedMbld = (title, msg, result, single, nameSingle, flagSingle) =>{
 	 msg.channel.send({embeds: [exampleEmbedMbld]});
 }
 
-const requestWCA = async(cmd, args, msg, avg, pays, cont=1,) => {
+
+const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
+	let single = "<:Single:369420530098372608>";
+	let avg ='<:AVG:369418969351716864>';
+
+	let pageWcaSingle = 'https://www.worldcubeassociation.org/results/rankings/333ft/single?show=by+region';
+	const requestSingle = await fetch(pageWcaSingle);
+	const requestSingleF = await requestSingle.text();
+	let pageWcaAverage = 'https://www.worldcubeassociation.org/results/rankings/333ft/average?show=by+region';
+	const requestAverage = await fetch(pageWcaAverage);
+	const requestAverageF = await requestAverage.text();
+
+
+	const timeNameAndFlagFeet =async (page) =>{
+
+		var patternT = cmd === 'wr' ? /World <.+\n.+"> (.+) </gm : cmd === 'cr'? new RegExp(cont +' <.+\n.+"> (.+) <', 'gm') : new RegExp(pays+ ' <.+\n.+"> (.+) <', 'gm');
+		var patternN = cmd === 'wr' ? /World <.+\n.+\n.+">(.+)<.a/gm : cmd === 'cr'? new RegExp(cont+' <.+\n.+\n.+">(.+)<.a', 'gm') : new RegExp(pays + ' <.+\n.+\n.+">(.+)<.a', 'gm');
+		var patternID = cmd ==='wr' ? new RegExp('World .+\n.+\n.+"(.+)"', 'gm'): cmd === 'cr' ? new RegExp(cont + ' .+\n.+\n.+"(.+)"', 'gm') : new RegExp(pays + ' .+\n.+\n.+"(.+)"','gm');
+		
+		let time = patternT.exec(page);
+		let timeF = time[1];
+		let name = patternN.exec(page);
+		let nameF = name[1];
+
+		let wcaBase = 'https://www.worldcubeassociation.org';
+		let wcaID = patternID.exec(page);
+		let wcaIDF = wcaID[1];
+		let pageWcaId = wcaBase+wcaIDF;
+		let requestFlag = await fetch(pageWcaId);
+		let requestFlagF = await requestFlag.text();
+		let patternF = /fi fi-(.+)"/gm;
+		let flag = patternF.exec(requestFlagF);
+		let flagF = `:flag_${flag[1]}:`;
+
+
+		return([timeF, nameF, flagF]);
+	}
+	let singleF = await(timeNameAndFlagFeet(requestSingleF));
+	let averageF = await(timeNameAndFlagFeet(requestAverageF));
+
+	var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd==="nr"? pays + ' Record'+ " " + args[0] : cmd_record[cmd] +" " + args[0];
+
+	let test = Embed(single, avg, singleF[0], averageF[0], msg, title, singleF[1], averageF[1], singleF[2], averageF[2]);
+}
+
+const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 
 		let patternNameSingle = /Single.+\n.+">(.+)<.a/;
 		let patternNameAvg = `Average.+\n.+">(.+)</a`;
@@ -150,4 +194,5 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont=1,) => {
 }
 
 export {requestWCA};
+export {requestWCAFeet};
 export {centisecondsToTime};

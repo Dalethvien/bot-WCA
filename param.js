@@ -24,12 +24,12 @@ const single ={
 	"ao5": "average"
 }
 const continents ={
-	"eu": "_Europe",
-	"na": "_North America",
-	"sa": "_South America",
-	"as": "_Asia",
-	"af": "_Africa",
-	"oc": "_Oceania"
+	"eu": "Europe",
+	"na": "North America",
+	"sa": "South America",
+	"as": "Asia",
+	"af": "Africa",
+	"oc": "Oceania"
 }
 const cmd_record ={
 	"wr": "World Record",
