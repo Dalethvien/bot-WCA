@@ -51,9 +51,10 @@ const centisecondsToTime = (time) => {
 	return `${min ? min + ":" : ""}${s}`;
 	};
 
-const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg) =>{
+const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd) =>{
+	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
 	const exampleEmbed = new MessageEmbed()
-	.setColor('#ffbf00')
+	.setColor(color)
 	.setTitle(title)
 	.addFields(
 	{name:`${single} ${nameSingle} ${flagSingle}`, value : singleF},
@@ -65,9 +66,10 @@ const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flag
 
 }
 
-const embedMbld = (title, msg, result, single, nameSingle, flagSingle) =>{
+const embedMbld = (title, msg, result, single, nameSingle, flagSingle, cmd) =>{
+	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#010001' : '#01E676';
 	const exampleEmbedMbld = new MessageEmbed()
-	 .setColor('#ffbf00')
+	 .setColor(color)
 	 .setTitle(title)
 	 .addFields(
 	 	{name:`${single} ${nameSingle} ${flagSingle}`, value:result})
@@ -176,20 +178,20 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 
     		const singleF = wr['single'].toString();
     		const avgF = (Number(wr['average'])/100).toString();
-    		let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg)
+    		let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd)
     		return;
 
     	}
     	else if (args[0] === 'mbld'){
     		let result = mbldToResult(wr['single']);
-			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle);
+			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle, cmd);
 			return;
 
 		}    	
 		
 	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
 	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg);
+    let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd);
 
 
     	

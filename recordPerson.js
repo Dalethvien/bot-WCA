@@ -16,7 +16,7 @@ const embedId = (singleF, averageF, name, flag, msg, args)=>{
 
 	if (args[0]!=='mbld'){
 		const exampleEmbed = new MessageEmbed()
-		.setColor('#ffbf00')
+		.setColor('#000000')
 		.setTitle(eventEmbed + ' record of ' + name+' '+flag)
 		.setFields(
 			{name:single, value:singleF},
@@ -71,7 +71,7 @@ const recordPerson = async(cmd, args, msg) =>{
 
 	}
 	catch (err){
-		msg.channel.send("Cette id wca n'existe pas !");
+		msg.channel.send("Cet id wca n'existe pas !");
 		return;
 	}
 	

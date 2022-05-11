@@ -33,8 +33,17 @@ Bot.on('messageCreate', msg  => {
 
 		else if (cmd === 'id'){
 			if (args.length !== 2){
-				msg.channel.send("Donnez deux paramètres avec la commande 'id' ! L'event puis l'id wca de la personne. \n Pour la liste d'events' '%events'. ");
-				return;
+				if (args.length === 1 ){
+					if (args[0].length !==10){
+						msg.channel.send("Veuillez préciser l'id de la personne ou bien donner un id valide !");
+						return;
+					}
+					msg.channel.send("https://www.worldcubeassociation.org/persons/" + args[0]);
+					return;
+				}
+				else if (args.length !== 1)
+				{msg.channel.send("Donnez un ou deux paramètres avec la commande 'id' ! L'event puis l'id wca de la personne, ou bien seulement l'id de la personne pour accéder à sa page wca ! \nPour la liste d'events' '%events'. ");
+				return;}
 			}
 			recordPerson(cmd, args, msg);
 		}
