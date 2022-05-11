@@ -26,6 +26,18 @@ const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') 
 		return([nameF, flagF]);
 }
 
+const mbldToResult =(number) =>{
+		let temps = ((Math.floor(Number(number) / 100) % 1e5) * 100)/100;
+		let minutes = Math.floor(temps/60);
+		let seconds = Math.round(((temps/60) - minutes)*60);
+   		const value = number;
+		const fail = value%100;
+		const solved = 99 - (Math.floor(value/1e7)%100);
+		const success = fail + solved;
+		const totalCubes = fail + success;
+		return `${success}/${totalCubes} cubes en ${minutes}:${seconds}`;
+}
+
 
 
 const centisecondsToTime = (time) => {
@@ -169,15 +181,7 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 
     	}
     	else if (args[0] === 'mbld'){
-			let temps = ((Math.floor(Number(wr['single']) / 100) % 1e5) * 100)/100;
-			let minutes = Math.floor(temps/60);
-			let seconds = Math.round(((temps/60) - minutes)*60);
-    		const value = wr['single'];
-			const fail = value%100;
-			const solved = 99 - (Math.floor(value/1e7)%100);
-			const success = fail + solved;
-			const totalCubes = fail + success;
-			let result = (`${success}/${totalCubes} cubes en ${minutes}:${seconds}`).toString();
+    		let result = mbldToResult(wr['single']);
 			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle);
 			return;
 
@@ -196,3 +200,4 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 export {requestWCA};
 export {requestWCAFeet};
 export {centisecondsToTime};
+export {mbldToResult};
