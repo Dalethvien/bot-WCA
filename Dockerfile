@@ -15,6 +15,6 @@ COPY param.js .
 COPY requestWCA.js .
 COPY wca.js .
 COPY recordPerson.js .
-COPY getRank.js.
+COPY getRank.js .
 
 CMD ["node", "wca.js"]
