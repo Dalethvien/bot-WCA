@@ -5,8 +5,8 @@ import {continents} from './param.js';
 import {cmd_record} from './param.js';
 import {isoCountries} from './param.js';
 import {MessageEmbed} from 'discord.js';
-
-// inside a command, event listener, etc.
+import cheerio from 'cheerio';
+import {getRankRecord} from './getRank.js';
 
 const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') =>{
 		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
@@ -51,28 +51,31 @@ const centisecondsToTime = (time) => {
 	return `${min ? min + ":" : ""}${s}`;
 	};
 
-const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd) =>{
+const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, cmd) =>{
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
+	var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
+	var nameAvg = cmd === "wr" ?`${avg} ${nameAvg} ${flagAvg}` :`${avg} ${nameAvg} ${flagAvg}  ${WRA}`;
 	const exampleEmbed = new MessageEmbed()
 	.setColor(color)
 	.setTitle(title)
 	.addFields(
-	{name:`${single} ${nameSingle} ${flagSingle}`, value : singleF},
+	{name: nameSingle, value : singleF},
 
-	{name: `${avg} ${nameAvg} ${flagAvg}`, value : avgF} //឵឵឵ is a special character for a false space in discord
+	{name: nameAvg, value : avgF} 
 	)
 
 	msg.channel.send({ embeds: [exampleEmbed] });
 
 }
 
-const embedMbld = (title, msg, result, single, nameSingle, flagSingle, cmd) =>{
-	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#010001' : '#01E676';
+const embedMbld = (title, msg, result, single, nameSingle, flagSingle, WRS, WRA, cmd) =>{
+	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
+	var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
 	const exampleEmbedMbld = new MessageEmbed()
 	 .setColor(color)
 	 .setTitle(title)
 	 .addFields(
-	 	{name:`${single} ${nameSingle} ${flagSingle}`, value:result})
+	 	{name:nameSingle, value:result})
 	 msg.channel.send({embeds: [exampleEmbedMbld]});
 }
 
@@ -88,6 +91,13 @@ const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
 	const requestAverage = await fetch(pageWcaAverage);
 	const requestAverageF = await requestAverage.text();
 
+
+	const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
+	var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
+	let pageWcaFinal = pageWca + events[args[0]] + region;
+	let liste = await getRankRecord(pageWcaFinal, args);
+	var WRS = liste[0] === '' ? '' :  `(WR ${liste[0]})`;
+	var WRA = liste[1] === '' ? '' :  `(WR ${liste[1]})`;
 
 	const timeNameAndFlagFeet =async (page) =>{
 
@@ -118,10 +128,18 @@ const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
 
 	var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd==="nr"? pays + ' Record'+ " " + args[0] : cmd_record[cmd] +" " + args[0];
 
-	let test = Embed(single, avg, singleF[0], averageF[0], msg, title, singleF[1], averageF[1], singleF[2], averageF[2]);
+	let test = Embed(single, avg, singleF[0], averageF[0], msg, title, singleF[1], averageF[1], singleF[2], averageF[2], WRS, WRA, cmd);
 }
 
 const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
+
+		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
+		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
+		let pageWcaFinal = pageWca + events[args[0]] + region;
+		let liste = await getRankRecord(pageWcaFinal, args);
+		var WRS = liste[0] === '' ? '' :  `(WR ${liste[0]})`;
+		var WRA = liste[1] === '' ? '' :  `(WR ${liste[1]})`;
+		
 
 		let patternNameSingle = /Single.+\n.+">(.+)<.a/;
 		let patternNameAvg = `Average.+\n.+">(.+)</a`;
@@ -184,14 +202,14 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
     	}
     	else if (args[0] === 'mbld'){
     		let result = mbldToResult(wr['single']);
-			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle, cmd);
+			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle, WRS, WRA, cmd);
 			return;
 
 		}    	
 		
 	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
 	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd);
+    Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, cmd);
 
 
     	

@@ -7,9 +7,11 @@ import {isoCountries} from './param.js';
 import {MessageEmbed} from 'discord.js';
 import {centisecondsToTime} from './requestWCA.js';
 import {mbldToResult} from './requestWCA.js';
+import cheerio from 'cheerio';
+import {getRankId} from './getRank.js';
 
 
-const embedId = (singleF, averageF, name, flag, msg, args)=>{
+const embedId = (singleF, averageF, name, flag, WRS, WRA, msg, args)=>{
 	let single = "<:Single:369420530098372608>";
 	let avg = '<:AVG:369418969351716864>';
 	var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
@@ -19,8 +21,8 @@ const embedId = (singleF, averageF, name, flag, msg, args)=>{
 		.setColor('#000000')
 		.setTitle(eventEmbed + ' record of ' + name+' '+flag)
 		.setFields(
-			{name:single, value:singleF},
-			{name:avg, value:averageF})
+			{name:single, value:singleF+'(WR'+WRS+')'},
+			{name:avg, value:averageF+'(WR'+WRA+')'})
 		msg.channel.send({ embeds: [exampleEmbed] });
 	}
 
@@ -50,10 +52,13 @@ const recordPerson = async(cmd, args, msg) =>{
 	let event = events[args[0]];
 	let id = args[1];
 	let urlF = url+id;
-	const res = await fetch(urlF);
-
+	let res = await fetch(urlF);
+	
 	try{
-
+	let liste = await getRankId(id);
+	let WRS = liste[event]['single'];
+	let WRA = liste[event]['average'];
+	
 	const json = await res.json();
 	let name = json.person.name;
 	let record = json.personal_records[event];
@@ -67,14 +72,18 @@ const recordPerson = async(cmd, args, msg) =>{
 
 	let flag = ':flag_'+json.person.country_iso2.toLowerCase()+':';
 
-	let test = embedId(single, average, name, flag, msg, args);
+	let test = embedId(single, average, name, flag, WRS, WRA, msg, args);
+
+
+
+
 
 	}
 	catch (err){
 		msg.channel.send("Cet id wca n'existe pas !");
 		return;
 	}
-	
+	 
 
 }
 export{recordPerson};
