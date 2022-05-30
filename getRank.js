@@ -37,10 +37,15 @@ const getRankRecord = async (page, args) =>{
 	var idSingle = liste[0] === undefined ? '' : liste[0].substr(9);
 	var idAverage = liste[1] === undefined ? '' : liste[1].substr(9);
 
-	var listeWRS = idSingle === '' ? '' :await getRankId(idSingle);
-	var listeWRA =  idAverage === '' ? '' :await getRankId(idAverage);
-	var WRS = listeWRS === '' ? '' : listeWRS[event]['single'];
-	var WRA = listeWRA === '' ? '' :  listeWRA[event]['average'];
+	let linkS = await fetch("https://www.worldcubeassociation.org/persons/"+idSingle);
+	let pageS = await linkS.text();
+	let linkA = await fetch("https://www.worldcubeassociation.org/persons/"+idAverage);
+	let pageA = await linkA.text();
+
+	var listeWRS = idSingle === '' ? '' :await getRankId(pageS);
+	var listeWRA =  idAverage === '' ? '' :await getRankId(pageA);
+	var WRS = listeWRS === '' ? '' : listeWRS[event]['single']['WR'];
+	var WRA = listeWRA === '' ? '' :  listeWRA[event]['average']['WR'];
 	return([WRS, WRA]);
 }
 
