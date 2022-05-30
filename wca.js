@@ -4,11 +4,12 @@ import {help} from './help.js';
 import {events} from './help.js';
 import {error} from './error.js'
 import {continent} from './help.js';
-let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 import {continents} from './param.js';
 import {isoCountries} from './param.js';
 import {recordPerson} from './recordPerson.js';
 import {requestWCAFeet} from './requestWCA.js';
+
+let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 Bot.on('ready', () => {
 
@@ -26,7 +27,7 @@ Bot.on('messageCreate', msg  => {
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
 
-		if (cmd !== 'wr' && cmd !== 'help' && cmd !== 'events' && cmd !== 'cr' && cmd !== 'nr' && cmd !== 'countries' && cmd !=='id'){
+		if (!['wr', 'cr', 'nr', 'id', 'help', 'events', 'continents', 'countries', 'ranking'].includes(cmd)){
 			error(cmd, msg);
 			return;
 		}
@@ -128,7 +129,7 @@ Bot.on('messageCreate', msg  => {
 		else if (cmd === 'events'){
 			events(cmd, msg);
 		}
-		else if (cmd ==='continent'){
+		else if (cmd ==='continents'){
 			continent(cmd, msg);
 		}
 		else if (cmd ==='countries'){

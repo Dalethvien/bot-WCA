@@ -4,19 +4,23 @@ import {events} from './param.js';
 
 
 
-const getRankId = async (id) =>{
-	let url = "https://www.worldcubeassociation.org/persons/"+id;
-	let res = await fetch(url);
-	let html = await res.text();
-	const $ = cheerio.load(html);
-	var liste = {};
-	$(".personal-records > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(2) > tr", html).each(function() {
-    liste[$(this).find("td.event").data("event")] = {
-        'single': $(this).find("td.world-rank").first().text(),
-        'average': $(this).find("td.world-rank").last().text()
+const getRankId = (page) =>{
+	const $ = cheerio.load(page);
+	var ranks = {};
+	$(".personal-records > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(2) > tr", page).each(function() {
+    ranks[$(this).find("td.event").data("event")] = {
+        'single':{'WR':$(this).find("td.world-rank").first().text(),
+        	'CR':$(this).find(" td:nth-child(3)").text(),
+        	'NR':$(this).find(" td:nth-child(2)").first().text()
+    	}, 
+
+        'average': {'WR':$(this).find("td.world-rank").last().text(),
+        	'CR':$(this).find(" td:nth-child(8)").text(),
+        	'NR':$(this).find(" td:nth-child(9)").text()
+    	},
     }
 	});
-	return(liste);
+	return(ranks);
 }
 
 const getRankRecord = async (page, args) =>{
