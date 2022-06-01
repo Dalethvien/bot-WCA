@@ -26,6 +26,7 @@ Bot.on('messageCreate', msg  => {
 		let msgSimple = command.split(" ")
 		let cmd = msgSimple[0]
 		let args = msgSimple.slice(1)
+		var pays = 1;
 
 		if (!['wr', 'cr', 'nr', 'id', 'help', 'events', 'continents', 'countries', 'ranking'].includes(cmd)){
 			error(cmd, msg);
@@ -48,7 +49,6 @@ Bot.on('messageCreate', msg  => {
 			}
 			recordPerson(cmd, args, msg);
 		}
-
 		else if (args[0] ==='feet'){
 			var pays = cmd === 'nr' ? isoCountries[args[1].toUpperCase()] : 1;
 			var cont = cmd ==='cr' ? continents[args[1]] : 1;
@@ -56,57 +56,32 @@ Bot.on('messageCreate', msg  => {
 		}
 
 		else if (cmd === 'wr'){
-			let pays = 1;
 			let event = events[args[0]]
 			if (args.length !==1){
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste d'events' '%events'");
 				return;
 			}
-			else  if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
-    		let avg = 'Mo3';
-    		requestWCA(cmd, args, msg, avg);
-    		
+    		requestWCA(cmd, args, msg, pays);
     	}
-    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
-    			let avg = '<:AVG:369418969351716864>';
-    			requestWCA(cmd, args, msg, avg, pays);
-    		}
-		}
 		else if (cmd === 'cr'){
-			let pays = 1;
     		let event = events[args[0]]
     		let cont = '_'+continents[args[1]];
     			if (args.length !== 2){
     				msg.channel.send("Donnez deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste des events '%events'. \n Pour la liste des continents '%continent'.");
     				return;
     			}
-    		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
-    		let avg = 'Mo3';
-    		requestWCA(cmd, args, msg, avg, pays,  cont);
-    	}
 
-    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
-    		let avg = '<:AVG:369418969351716864>';
-    		requestWCA(cmd, args, msg, avg, pays, cont);
-    		}
+    		requestWCA(cmd, args, msg, pays,  cont);
     	}
 
     	else if  (cmd === 'nr'){;
     		let event = events[args[0]];
-    		let pays = isoCountries[args[1].toUpperCase()];
+    		pays = isoCountries[args[1].toUpperCase()];
     		if (args.length !== 2){
     			msg.channel.send("Donnez deux paramètres avec la commande 'nr' ( 1) l'event, 2) le pays). \n Pour la liste des events '%events'. \n Pour la liste des pays '%countries'.");
     			return;
     		}
-    		else if (event === '3bld' || event === '4bld' || event === '5bld' || event === 'fmc' || event === '66' || event === '77'){
-    		let avg = 'Mo3';
-    		requestWCA(cmd, args, msg, avg, pays);
-    	}
-
-    		else if (event !== '3bld' && event !== '4bld' && event !== '5bld' && event !== 'fmc' && event !== '66' && event !== '77'){
-    		let avg = '<:AVG:369418969351716864>';
-    		requestWCA(cmd, args, msg, avg, pays);
-    		}
+    		requestWCA(cmd, args, msg, pays);
     	}
 
 		else if (cmd === 'ranking'){

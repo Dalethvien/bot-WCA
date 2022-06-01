@@ -123,7 +123,7 @@ const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
 	let test = Embed(single, avg, singleF[0], averageF[0], msg, title, singleF[1], averageF[1], singleF[2], averageF[2], WRS, WRA, cmd);
 }
 
-const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
+const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
