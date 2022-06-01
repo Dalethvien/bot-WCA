@@ -8,74 +8,66 @@ import {MessageEmbed} from 'discord.js';
 import cheerio from 'cheerio';
 import {getRankRecord} from './getRank.js';
 
-const nameAndFlag = async(patternName, patternFlag, args, cmd, average='False') =>{
-		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
-		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
-		let pageWcaFinal = pageWca + events[args[0]] + region;
-
-		const request = await fetch(pageWcaFinal);
-		const requestF = await request.text();
-
-		let name = requestF.match(patternName);
-		var nameF = name === null ? 'N/A' : name[1];
-
-		let flag= requestF.match(patternFlag);
-		var num = average === 'True' ? 1 : 0
-		let flagF = flag[num] === undefined ? 'N/A' :flag[num].toString().match(/(?<=flag-icon-|fi-)[a-z]{2}/g)[0];
-
-		return([nameF, flagF]);
+const getInfos = (data, ele)=>{
+	let liste = [];
+	data.forEach(element => liste.push(element[ele].trim()) );
+	let infos = [...new Set(liste)].join().replaceAll(',', ', ');
+	return(infos);
 }
+const getTime = (page) =>{
+	const $ = cheerio.load(page);
+	var tableau = [];
+	$("#results-list > div >table >tbody >tr", page).each(function(){
+    let type = $(this).find("td.type").text().trim();
+    (tableau[type] = tableau[type] || []).push({
+        'name':$(this).find("td.name > a").text().trim(),
+        'time':$(this).find("td.result").text().trim(),
+        'country':$(this).find("td.country").text().trim()
+    })
+});;
+	return(tableau);
 
-const mbldToResult =(number) =>{
-		let temps = ((Math.floor(Number(number) / 100) % 1e5) * 100)/100;
-		let minutes = Math.floor(temps/60);
-		let seconds = Math.round(((temps/60) - minutes)*60);
-   		const value = number;
-		const fail = value%100;
-		const solved = 99 - (Math.floor(value/1e7)%100);
-		const success = fail + solved;
-		const totalCubes = fail + success;
-		return `${success}/${totalCubes} cubes en ${minutes}:${seconds}`;
+}
+const getFlag = (data)=>{
+	let country = Object.keys(isoCountries).find(key => isoCountries[key] === data).toLowerCase();
+	let flag = `:flag_${country}:`;
+	return(flag);
 }
 
 
-
-const centisecondsToTime = (time) => {
-	const t = time/100;
-	const min = Math.floor(t / 60);
- 	let s = (t - min * 60).toFixed(2);
- 	if (min > 0 && s.length === 4) {
-		s = "0" + s;
-  	}
-
-	return `${min ? min + ":" : ""}${s}`;
-	};
-
-const Embed = (single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, cmd) =>{
+const Embed = (timeSingle, timeAverage, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, msg, title, cmd) =>{
+	let singleEmote = "<:Single:369420530098372608>";
+	let avgEmote = '<:AVG:369418969351716864>';
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
-	var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
-	var nameAvg = cmd === "wr" ?`${avg} ${nameAvg} ${flagAvg}` :`${avg} ${nameAvg} ${flagAvg}  ${WRA}`;
+	//var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
+	//var nameAvg = cmd === "wr" ?`${avg} ${nameAvg} ${flagAvg}` :`${avg} ${nameAvg} ${flagAvg}  ${WRA}`;
+	let nameEmbedSingle =`${singleEmote} ${nameSingle} ${flagSingle}`;
+	let nameEmbedAverage = `${avgEmote} ${nameAvg} ${flagAvg}`;
 	const exampleEmbed = new MessageEmbed()
 	.setColor(color)
 	.setTitle(title)
 	.addFields(
-	{name: nameSingle, value : singleF},
+	{name: nameEmbedSingle, value : timeSingle},
 
-	{name: nameAvg, value : avgF} 
+	{name: nameEmbedAverage, value : timeAverage} 
 	)
 
 	msg.channel.send({ embeds: [exampleEmbed] });
 
 }
 
-const embedMbld = (title, msg, result, single, nameSingle, flagSingle, WRS, WRA, cmd) =>{
+const embedMbld = (timeSingle, nameSingle, flagSingle, WRS, WRA, title, msg, cmd) =>{
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
-	var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
+	let singleEmote = "<:Single:369420530098372608>";
+	//var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
+	let nameEmbedSingle = `${singleEmote} ${nameSingle} ${flagSingle}`;
+	let listeSingleSplit = timeSingle.split(" ");
+	let time = listeSingleSplit[0] + " en " + listeSingleSplit[1];
 	const exampleEmbedMbld = new MessageEmbed()
 	 .setColor(color)
 	 .setTitle(title)
 	 .addFields(
-	 	{name:nameSingle, value:result})
+	 	{name:nameEmbedSingle, value:time})
 	 msg.channel.send({embeds: [exampleEmbedMbld]});
 }
 
@@ -133,31 +125,6 @@ const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
 
 const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 
-		const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
-		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
-		let pageWcaFinal = pageWca + events[args[0]] + region;
-		let liste = await getRankRecord(pageWcaFinal, args);
-		var WRS = liste[0] === '' ? '' :  `(WR ${liste[0]})`;
-		var WRA = liste[1] === '' ? '' :  `(WR ${liste[1]})`;
-		
-
-		let patternNameSingle = /Single.+\n.+">(.+)<.a/;
-		let patternNameAvg = `Average.+\n.+">(.+)</a`;
-
-		let patternFlag = /country.+-(.+)"/g;
-
-		
-		let singleEmbed = await(nameAndFlag(patternNameSingle, patternFlag, args, cmd));
-		let nameSingle = singleEmbed[0];
-		let flagSingle = ':flag_' + singleEmbed[1].toString() + ':';
-		let average = 'True';
-		let avgEmbed = await(nameAndFlag(patternNameAvg, patternFlag, args, cmd, average));
-		let nameAvg = avgEmbed[0];
-		var flagAvg = avgEmbed[1] ==='N/A'? '' :':flag_' + avgEmbed[1].toString() + ':';
-		
-		var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
-		var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + eventEmbed : cmd==="nr"? pays + ' Record'+ " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
-		let single = "<:Single:369420530098372608>";
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
 		let countries = Object.keys(isoCountries);
@@ -177,39 +144,43 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 				return;
 			}
 		}
+
+
+		const pageWcA = "https://www.worldcubeassociation.org/results/records?event_id=";
+		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
+		let pageWcaFinaL = pageWcA+ events[args[0]] +region;
+		let request = await fetch(pageWcaFinaL);
+		let page = await request.text();
+		const $ = cheerio.load(page)
+
+
+		let data = getTime(page);
+		if (Object.keys(data).length ===0){
+			msg.channel.send("Il n'y a pas de record pour ce pays (ou tout du moins dans cet event) ! Ou alors la <:WCA:456059019677663233> ne le considère pas comme un territoire à part !");
+    		return;
+		}
+
+
 		
+		let nameSingle = getInfos(data['Single'], 'name');
+		var nameAverage = data['Average'] === undefined ? '' : getInfos(data['Average'], 'name');
+		let flagSingle = getFlag(getInfos(data['Single'], 'country'));
+		var flagAverage = data['Average'] === undefined ? '' : getFlag(getInfos(data['Average'], 'country'));
+		let timeSingle = getInfos(data['Single'], 'time');
+		var timeAverage = data['Average'] === undefined ? 'DNF' : getInfos(data['Average'], 'time');
 
-		let event = events[args[0]];
-		let url = 'https://www.worldcubeassociation.org/api/v0/records';
-    	const res = await fetch(url);
-    	const json = await res.json();
-    	var wr = await (cmd === "wr" ? json.world_records : cmd === "cr" ? json.continental_records[cont] : json.national_records[pays]);
-    	var wr = wr === undefined ? wr : wr[event];
-   		if (wr === undefined){
-    		msg.channel.send("Il n'y a pas de record pour ce pays (ou tout du moins dans cet event) ! Ou alors la <:WCA:456059019677663233> ne le considère pas comme un territoire à part !");
-    		return;
-    	}
-    	const wrS = Number(wr['single']);
-    	const wrA = Number(wr['average']);
+		var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
+				var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + eventEmbed : cmd==="nr"? pays + ' Record'+ " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
+		let WRS = '';
+		let WRA = '';
 
-    	if (args[0] === 'fmc'){
-
-    		const singleF = wr['single'].toString();
-    		const avgF = (Number(wr['average'])/100).toString();
-    		let test = Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, cmd)
-    		return;
-
-    	}
-    	else if (args[0] === 'mbld'){
-    		let result = mbldToResult(wr['single']);
-			let test = embedMbld(title, msg, result, single, nameSingle, flagSingle, WRS, WRA, cmd);
+    	if (args[0] === 'mbld'){
+			let test = embedMbld(timeSingle, nameSingle, flagSingle, WRS, WRA, title, msg, cmd);
 			return;
 
 		}    	
-		
-	var singleF = isNaN(wrS) === false ? centisecondsToTime(wrS) : 'DNF';
-	var avgF = isNaN(wrA) === false ? centisecondsToTime(wrA) : 'DNF';
-    Embed(single, avg, singleF, avgF, msg, title, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, cmd);
+
+    	Embed(timeSingle, timeAverage, nameSingle, nameAverage, flagSingle, flagAverage, WRS, WRA, msg, title, cmd);
 
 
     	
@@ -219,5 +190,3 @@ const requestWCA = async(cmd, args, msg, avg, pays, cont) => {
 
 export {requestWCA};
 export {requestWCAFeet};
-export {centisecondsToTime};
-export {mbldToResult};

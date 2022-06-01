@@ -5,13 +5,10 @@ import {continents} from './param.js';
 import {cmd_record} from './param.js';
 import {isoCountries} from './param.js';
 import {MessageEmbed} from 'discord.js';
-import {centisecondsToTime} from './requestWCA.js';
-import {mbldToResult} from './requestWCA.js';
 import cheerio from 'cheerio';
 import {getRankId} from './getRank.js';
 
-const getTime = (page)=>{
-	const $ = cheerio.load(page);
+const getTime = (page, $)=>{
 	var times = {};
 	$(".personal-records > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(2) > tr", page).each(function() {
     times[$(this).find("td.event").data("event")] = {
@@ -22,8 +19,8 @@ const getTime = (page)=>{
 	return(times);
 
 }
-const getCountry = (page)=>{
-	const $ = cheerio.load(page);
+
+const getCountry = (page, $)=>{
 	let cheerioCountry = $(".country", page).text().trim();
 	let country = Object.keys(isoCountries).find(key => isoCountries[key] === cheerioCountry).toLowerCase();
 	let flag = `:flag_${country}:`;
@@ -46,12 +43,13 @@ const embedId = (singleF, averageF, name, flag, WRS, WRA, CRS, CRA, NRS, NRA, ms
 	}
 
 	else if (args[0]==='mbld'){
-
+		let listeSingleSplit = singleF.split(" ");
+		let time = listeSingleSplit[0] + " en " + listeSingleSplit[1];
 		const exampleEmbed = new MessageEmbed()
 		.setColor('#00000')
 		.setTitle(`${eventEmbed} record of ${name} ${flag}`)
 		.setFields(
-			{name:single, value:`${singleF} (WR${WRS})`})
+			{name:single, value:`${time} (WR${WRS}) (CR${CRS}) (NR${NRS})`})
 		msg.channel.send({ embeds: [exampleEmbed] });		
 	}
 }
@@ -77,11 +75,12 @@ const recordPerson = async(cmd, args, msg) =>{
 		return;
 	}
 	try {
-		let times = getTime(page);
+		let times = getTime(page, $);
 		let singlE = times[events[args[0]]]['single'];
 		var averagE = times[events[args[0]]]['average'] === '' ? 'DNF' : times[events[args[0]]]['average'];
 		
-		let ranks = getRankId(page);
+		let event =events[args[0]];
+		let ranks = getRankId(page, $, event);
 		let wrRankSingle = ranks[events[args[0]]]['single']['WR'];
 		let wrRankAverage = ranks[events[args[0]]]['average']['WR'];
 		let crRankSingle = ranks[events[args[0]]]['single']['CR'];
@@ -89,7 +88,7 @@ const recordPerson = async(cmd, args, msg) =>{
 		let nrRankSingle = ranks[events[args[0]]]['single']['NR'];
 		let nrRankAverage = ranks[events[args[0]]]['average']['NR'];
 		
-		let flag = getCountry(page);
+		let flag = getCountry(page, $);
 
 		let name = $("#person > div:nth-child(1) > div.text-center > h2", page).text().trim();
 		embedId(singlE, averagE, name, flag, wrRankSingle, wrRankAverage, crRankSingle, crRankAverage, nrRankSingle, crRankAverage, msg, args);

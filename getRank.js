@@ -4,8 +4,7 @@ import {events} from './param.js';
 
 
 
-const getRankId = (page) =>{
-	const $ = cheerio.load(page);
+const getRankId = (page, $, event) =>{
 	var ranks = {};
 	$(".personal-records > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(2) > tr", page).each(function() {
     ranks[$(this).find("td.event").data("event")] = {
