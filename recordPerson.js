@@ -91,7 +91,7 @@ const recordPerson = async(cmd, args, msg) =>{
 		let flag = getCountry(page, $);
 
 		let name = $("#person > div:nth-child(1) > div.text-center > h2", page).text().trim();
-		embedId(singlE, averagE, name, flag, wrRankSingle, wrRankAverage, crRankSingle, crRankAverage, nrRankSingle, crRankAverage, msg, args);
+		embedId(singlE, averagE, name, flag, wrRankSingle, wrRankAverage, crRankSingle, crRankAverage, nrRankSingle, nrRankAverage, msg, args);
 
 		
 	}

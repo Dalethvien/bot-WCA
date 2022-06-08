@@ -1,5 +1,5 @@
 function help (cmd, msg){
-	msg.channel.send("Ce bot vous permet d'obtenir les WR et CR des différents events de la <:WCA:456059019677663233>, respectivement avec les commandes '%wr' et '%cr' !\n Pour les WR : %wr *event* \n Pour les CR : %cr *event* *continent* \n Il permet également d'obtenir les records d'une personne spécifique, pour ça utilisez la commande '%id' \n Pour les records d'une personne : '%id *event* *id wca*' \n  Pour la liste des events : %events \n Pour la liste des continents : %continent ");
+	msg.channel.send("Ce bot vous permet d'obtenir les WR, CR et NR des différents events de la <:WCA:456059019677663233>, respectivement avec les commandes '%wr' et '%cr' !\n Pour les WR : %wr *event* \n Pour les CR : %cr *event* *continent* \n Pour les NR : %nr *event* *code_iso2_du_pays* Il permet également d'obtenir les records d'une personne spécifique, pour ça utilisez la commande '%id' \n Pour les records d'une personne : '%id *event* *id_wca*' \n  Pour la liste des events : %events \n Pour la liste des continents : %continents \n Pour la liste des pays : %countries");
 	
 }
 
