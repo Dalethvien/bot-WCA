@@ -8,7 +8,7 @@ import {continents} from './param.js';
 import {isoCountries} from './param.js';
 import {recordPerson} from './recordPerson.js';
 import {requestWCAFeet} from './requestWCA.js';
-
+import {ranking} from './ranking.js';
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 Bot.on('ready', () => {
@@ -49,7 +49,9 @@ Bot.on('messageCreate', msg  => {
 			}
 			recordPerson(cmd, args, msg);
 		}
-		else if (args[0] ==='feet'){
+		else if (args[0] ==='feet' && ['nr', 'wr', 'cr'].includes(cmd)){
+			msg.channel.send("Commande en maintenance (et puis c'est du feet hein, ça va)");
+			return;
 			var pays = cmd === 'nr' ? isoCountries[args[1].toUpperCase()] : 1;
 			var cont = cmd ==='cr' ? continents[args[1]] : 1;
 			requestWCAFeet(cmd, args, msg, pays, cont);
@@ -85,9 +87,9 @@ Bot.on('messageCreate', msg  => {
     	}
 
 		else if (cmd === 'ranking'){
-			msg.channel.send('Oups, cette commande est encore en développement');
+			ranking(cmd, args, msg);
 			return;
-			if (args.lenght >3 || isNaN(args[1]) || isNaN(args[3])){
+			if (args.lenght >4 || isNaN(args[1]) || isNaN(args[3])){
 				msg.channel.send("Donnez trois paramètre avec la commande 'ranking'. \n Les paramètres doit être du style '%ranking [event] [single/average] [x]'. \n Pour la list d'events '%events'. \n x représente le top x que vous voulez");
 				return;
 			}
@@ -95,7 +97,6 @@ Bot.on('messageCreate', msg  => {
 				msg.channel.send("Donnez trois paramètre avec la commande 'ranking'. \n Les paramètres doit être du style '%ranking [event] [single/average] [x]'. \n Pour la list d'events '%events'. \n x représente le top x que vous voulez");
 				return;
 			}
-			requestWCA(cmd, args, msg);
 
 		}
 		else if (cmd === 'help'){
