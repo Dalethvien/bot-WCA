@@ -30,15 +30,15 @@ const getCountry = (page, $)=>{
 const embedId = (singleF, averageF, name, flag, WRS, WRA, CRS, CRA, NRS, NRA, msg, args)=>{
 	let single = "<:Single:369420530098372608>";
 	let avg = '<:AVG:369418969351716864>';
-	var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
+	var eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
 
 	if (args[0]!=='mbld'){
 		const exampleEmbed = new MessageEmbed()
 		.setColor('#000000')
 		.setTitle(eventEmbed + ' record of ' + name+' '+flag)
 		.setFields(
-			{name:single, value:`${singleF} (WR${WRS}) (CR${CRS}) (NR${NRS})`},
-			{name:avg, value:`${averageF} (WR${WRA}) (CR${CRA}) (NR${NRA})`})
+			{name:single, value:`${singleF} ${WRS} ${CRS} ${NRS}`},
+			{name:avg, value:`${averageF} ${WRA} ${CRA} ${NRA}`})
 		msg.channel.send({ embeds: [exampleEmbed] });
 	}
 
@@ -49,7 +49,7 @@ const embedId = (singleF, averageF, name, flag, WRS, WRA, CRS, CRA, NRS, NRA, ms
 		.setColor('#00000')
 		.setTitle(`${eventEmbed} record of ${name} ${flag}`)
 		.setFields(
-			{name:single, value:`${time} (WR${WRS}) (CR${CRS}) (NR${NRS})`})
+			{name:single, value:`${time} ${WRS} ${CRS} ${NRS}`})
 		msg.channel.send({ embeds: [exampleEmbed] });		
 	}
 }
@@ -81,12 +81,12 @@ const recordPerson = async(cmd, args, msg) =>{
 		
 		let event =events[args[0]];
 		let ranks = getRankId(page, $, event);
-		let wrRankSingle = ranks[events[args[0]]]['single']['WR'];
-		let wrRankAverage = ranks[events[args[0]]]['average']['WR'];
-		let crRankSingle = ranks[events[args[0]]]['single']['CR'];
-		let crRankAverage = ranks[events[args[0]]]['average']['CR'];
-		let nrRankSingle = ranks[events[args[0]]]['single']['NR'];
-		let nrRankAverage = ranks[events[args[0]]]['average']['NR'];
+		var wrRankSingle = ranks[events[args[0]]]['single']['WR'] === '' ? '' : `(WR ${ranks[events[args[0]]]['single']['WR']})` ;
+		var wrRankAverage = ranks[events[args[0]]]['average']['WR'] === '' ? '' : `(WR ${ranks[events[args[0]]]['average']['WR']})` ;
+		var crRankSingle = ranks[events[args[0]]]['single']['CR'] === '' ? '' : `(CR ${ranks[events[args[0]]]['single']['CR']})` ;
+		var crRankAverage = ranks[events[args[0]]]['average']['CR'] === '' ? '' : `(CR ${ranks[events[args[0]]]['average']['CR']})` ;
+		var nrRankSingle = ranks[events[args[0]]]['single']['NR'] === '' ? '' : `(NR ${ranks[events[args[0]]]['single']['NR']})` ;
+		var nrRankAverage = ranks[events[args[0]]]['average']['NR'] === '' ? '' : `(NR ${ranks[events[args[0]]]['average']['NR']})` ;
 		
 		let flag = getCountry(page, $);
 

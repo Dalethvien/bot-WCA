@@ -18,14 +18,21 @@ const embedRanking = (url, title, embedFields, msg) =>{
 }
 
 const ranking = async (cmd, args, msg)=>{
-	var eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
-	let event = events[args[0]];
-	var rank = isNaN(args[1]) === false ? args[1] : isNaN(args[2]) === false ? args[2] : 100;
-	var regArg = isNaN(args[1]) === true ? args[1] : isNaN(args[2]) === true ? args[2] : args[2];
+	let list = Object.keys(events);
+	var i = list.includes(args[0]) === true ? 0 : list.includes(args[1]) === true ? 1: list.includes(args[2]) === true ? 2 : undefined ;
+	if (i === undefined){
+		msg.channel.send("Précisez un event valide ! ")
+		return;
+	}
+	let event = args[i];
+	args.splice(i, 1);
+	var rank =  isNaN(args[0]) === false ? args[0] : isNaN(args[1]) === false ? args[1] : 100;
+	var regArg = isNaN(args[0]) === true ? args[0] : isNaN(args[1]) === true ? args[1] : args[1];
 	let conts = Object.keys(continents);
 	let pays = Object.keys(isoCountries);
 	var region = regArg === undefined ? "" : conts.includes(regArg) === true ? "?region=_"+continents[regArg] : "?region="+isoCountries[regArg.toUpperCase()];
-	let wca = await fetch('https://www.worldcubeassociation.org/results/rankings/' + events[args[0]] + '/single' + region);
+	var eventEmbed = event === "22" ? "2x2" : event === "33" ? "3x3" : event === "44" ? "4x4" : event=== "55" ? "5x5" : event === "66" ? "6x6" : event === "77" ? "7x7" : event === 'pyra' ? "pyraminx" : event === "mega" ? "megaminx" : event === "fmc" ? "FMC" : event === 'sq1' ? 'square-one' : event === 'mbld' ? 'multiblind' : event;
+	let wca = await fetch('https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/single' + region);
 	let page = await wca.text();
 	const $ = cheerio.load(page);
 	var names = [];
