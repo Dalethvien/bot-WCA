@@ -35,9 +35,7 @@ const ranking = async (cmd, args, msg)=>{
 	var i = isNaN(args[0]) === true && args[0] !== "average" ? 0 : isNaN(args[1]) === true && args[1] !== "average" ? 1 : isNaN(args[2]) === true && args[2] !== "average" ? 2 :  undefined;
 	let regArg = args[i]
 	args.splice(i, 1);
-	console.log(args);
 	var average = args[0] === "average" ? "average" : undefined;
-	console.log(event, rank, regArg, average);
 
 	
 	let conts = Object.keys(continents);
