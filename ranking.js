@@ -19,20 +19,32 @@ const embedRanking = (url, title, embedFields, msg) =>{
 
 const ranking = async (cmd, args, msg)=>{
 	let list = Object.keys(events);
-	var i = list.includes(args[0]) === true ? 0 : list.includes(args[1]) === true ? 1: list.includes(args[2]) === true ? 2 : undefined ;
+	
+	var i = list.includes(args[0]) === true ? 0 : list.includes(args[1]) === true ? 1: list.includes(args[2]) === true ? 2 : list.includes(args[3]) === true ? 3 : undefined;
 	if (i === undefined){
 		msg.channel.send("Précisez un event valide ! ")
 		return;
 	}
 	let event = args[i];
 	args.splice(i, 1);
-	var rank =  isNaN(args[0]) === false ? args[0] : isNaN(args[1]) === false ? args[1] : 100;
-	var regArg = isNaN(args[0]) === true ? args[0] : isNaN(args[1]) === true ? args[1] : args[1];
+
+	var i =  isNaN(args[0]) === false ? 0 : isNaN(args[1]) === false ? 1 : isNaN(args[2]) === false ? 2 :  100;
+	var rank = args[i] !== undefined ? args[i] : 100;
+	args.splice(i, 1);
+
+	var i = isNaN(args[0]) === true && args[0] !== "average" ? 0 : isNaN(args[1]) === true && args[1] !== "average" ? 1 : isNaN(args[2]) === true && args[2] !== "average" ? 2 :  undefined;
+	let regArg = args[i]
+	args.splice(i, 1);
+	console.log(args);
+	var average = args[0] === "average" ? "average" : undefined;
+	console.log(event, rank, regArg, average);
+
+	
 	let conts = Object.keys(continents);
 	let pays = Object.keys(isoCountries);
 	var region = regArg === undefined ? "" : conts.includes(regArg) === true ? "?region=_"+continents[regArg] : "?region="+isoCountries[regArg.toUpperCase()];
 	var eventEmbed = event === "22" ? "2x2" : event === "33" ? "3x3" : event === "44" ? "4x4" : event=== "55" ? "5x5" : event === "66" ? "6x6" : event === "77" ? "7x7" : event === 'pyra' ? "pyraminx" : event === "mega" ? "megaminx" : event === "fmc" ? "FMC" : event === 'sq1' ? 'square-one' : event === 'mbld' ? 'multiblind' : event;
-	let wca = await fetch('https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/single' + region);
+	var wca = average === "average" ? await fetch('https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/average' + region) : await fetch('https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/single' + region);
 	let page = await wca.text();
 	const $ = cheerio.load(page);
 	var names = [];
