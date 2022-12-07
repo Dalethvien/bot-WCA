@@ -169,7 +169,6 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 		const pageWcA = "https://www.worldcubeassociation.org/results/records?event_id=";
 		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[0]] : '&region='+ isoCountries[args[0].toUpperCase()];
 		let pageWcaFinaL = pageWcA+ events[event] +region;
-		console.log(pageWcaFinaL)
 		let request = await fetch(pageWcaFinaL);
 		let page = await request.text();
 		const $ = cheerio.load(page)
