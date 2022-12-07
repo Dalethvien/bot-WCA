@@ -11,8 +11,8 @@ import {getRankRecord} from './getRank.js';
 const getInfos = (data, ele)=>{
 	let liste = [];
 	data.forEach(element => liste.push(element[ele].trim()) );
-	let infos = [...new Set(liste)].join().replaceAll(',', ', ');
-	return(infos);
+	//let infos = [...new Set(liste)].join().replaceAll(',', ', ');
+	return(liste);
 }
 const getTime = (page) =>{
 	const $ = cheerio.load(page);
@@ -35,21 +35,41 @@ const getFlag = (data)=>{
 }
 
 
-const Embed = (timeSingle, timeAverage, nameSingle, nameAvg, flagSingle, flagAvg, WRS, WRA, msg, title, cmd) =>{
+const Embed = (timeSingle, timeAverage, nameSingle, nameAvg, flag_single, flag_avg, WRS, WRA, msg, title, cmd) =>{
 	let singleEmote = "<:Single:369420530098372608>";
 	let avgEmote = '<:AVG:369418969351716864>';
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
-	//var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
-	//var nameAvg = cmd === "wr" ?`${avg} ${nameAvg} ${flagAvg}` :`${avg} ${nameAvg} ${flagAvg}  ${WRA}`;
-	let nameEmbedSingle =`${singleEmote} ${nameSingle} ${flagSingle}`;
-	let nameEmbedAverage = `${avgEmote} ${nameAvg} ${flagAvg}`;
+	var NS = []
+	var NA = [];
+	for (let i=0; i< flag_single.length; i++){
+		if (cmd !== 'nr'){
+			NS.push(nameSingle[i] + flag_single[i])
+		}
+		else if ((i+1) !== flag_single.length){
+			NS.push(nameSingle[i])}
+		else if ((i+1) === flag_single.length){
+				NS.push(nameSingle[i] + flag_single[0])
+			}
+	}
+	for (let i=0; i< flag_avg.length; i++){
+		if (cmd !== 'nr'){
+			NA.push(nameAvg[i] + flag_avg[i])
+		}
+		else if ((1+i) !== flag_avg.length){
+			NA.push(nameAvg[i])}
+		else if ((i+1) === flag_avg.length){
+				NA.push(nameAvg[i] + flag_avg[0])
+			}
+	}
+	let nameEmbedSingle = singleEmote +" " +NS.join().replaceAll(',', ', ');
+	let nameEmbedAverage = avgEmote + " " + NA.join().replaceAll(',', ', ');
 	const exampleEmbed = new MessageEmbed()
 	.setColor(color)
 	.setTitle(title)
 	.addFields(
-	{name: nameEmbedSingle, value : timeSingle},
+	{name: nameEmbedSingle, value : timeSingle[0]},
 
-	{name: nameEmbedAverage, value : timeAverage} 
+	{name: nameEmbedAverage, value : timeAverage[0]} 
 	)
 
 	msg.channel.send({ embeds: [exampleEmbed] });
@@ -128,27 +148,28 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 		let list = Object.keys(events);
 		let conts = Object.keys(continents);
 		let countries = Object.keys(isoCountries);
-		if (!list.includes(args[0])){
-			msg.channel.send("L'event doit faire partie de la liste d'events existant ! \nSi vous voulez accèder à la liste '%events'")
-			return;
-		}
-		else if (cmd === 'cr'){
-			 if (!conts.includes(args[1])){
-				msg.channel.send("Le continent doit faire partie de la liste de continents existant ! \n Si vous voulez accèder à la liste '%continent'")
+		var i = list.includes(args[0]) === true ? 0 : list.includes(args[1]) === true ? 1: list.includes(args[2]) === true ? 2 : undefined ;
+
+		var event = args[i];
+		if (event !== undefined){
+			args.splice(i, 1)};
+		if (args.lenght !== 0 && (cmd === 'nr' || cmd === 'cr')){
+			if (conts.includes(args[0]) === false && countries.includes(args[0].toUpperCase()) === false){
+				if (cmd === 'nr'){
+					msg.channel.send("Veuillez préciser un pays valides ! ")
+				}else if(cmd === 'cr'){
+					msg.channel.send("Veuillez préciser un continent valdie !")
+				}
 				return;
 			}
-		}
-		else if (cmd === 'nr'){
-			if (!countries.includes(args[1].toUpperCase())){
-				msg.channel.send("Le pays doit faire partie de la liste de pays disponible ! \n Si vous voulez accéder à la liste des pays '%countries'")
-				return;
-			}
+
 		}
 
 
 		const pageWcA = "https://www.worldcubeassociation.org/results/records?event_id=";
-		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
-		let pageWcaFinaL = pageWcA+ events[args[0]] +region;
+		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[0]] : '&region='+ isoCountries[args[0].toUpperCase()];
+		let pageWcaFinaL = pageWcA+ events[event] +region;
+		console.log(pageWcaFinaL)
 		let request = await fetch(pageWcaFinaL);
 		let page = await request.text();
 		const $ = cheerio.load(page)
@@ -164,13 +185,31 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 		
 		let nameSingle = getInfos(data['Single'], 'name');
 		var nameAverage = data['Average'] === undefined ? '' : getInfos(data['Average'], 'name');
-		let flagSingle = getFlag(getInfos(data['Single'], 'country'));
-		var flagAverage = data['Average'] === undefined ? '' : getFlag(getInfos(data['Average'], 'country'));
+		var flagSingle = getInfos(data['Single'], 'country');
+		var flagAverage = getInfos(data['Average'], 'country');
+		var flag_single = []
+		var flag_avg = []
+		for (let i=0; i<flagSingle.length; i++){
+			if (flagSingle[i] !== "United States"){
+				flag_single.push(getFlag(flagSingle[i]))
+			}
+			else if (flagSingle[i] === "United States"){
+				flag_single.push(getFlag('USA'))
+			}
+		}
+		for (let i=0; i<flagAverage.length; i++){
+			if (flagAverage[i] !== "United States"){
+				flag_avg.push(getFlag(flagAverage[i]))
+			}
+			else if (flagAverage[i] === "United States"){
+				flag_avg.push(getFlag('USA'))
+			}
+		}
 		let timeSingle = getInfos(data['Single'], 'time');
 		var timeAverage = data['Average'] === undefined ? 'DNF' : getInfos(data['Average'], 'time');
 
-		var  eventEmbed = args[0] === "22" ? "2x2" : args[0] === "33" ? "3x3" : args[0] === "44" ? "4x4" : args[0]=== "55" ? "5x5" : args[0] === "66" ? "6x6" : args[1] === "77" ? "7x7" : args[0] === 'pyra' ? "pyraminx" : args[0] === "mega" ? "megaminx" : args[0] === "fmc" ? "FMC" : args[0] === 'sq1' ? 'square-one' : args[0] === 'mbld' ? 'multiblind' : args[0];
-				var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + eventEmbed : cmd==="nr"? pays + ' Record'+ " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
+		var  eventEmbed = event === "22" ? "2x2" : event === "33" ? "3x3" : event === "44" ? "4x4" : event=== "55" ? "5x5" : event === "66" ? "6x6" : event === "77" ? "7x7" : event === 'pyra' ? "pyraminx" : event === "mega" ? "megaminx" : event === "fmc" ? "FMC" : event === 'sq1' ? 'square-one' : event === 'mbld' ? 'multiblind' : event;
+		var title = cmd === "cr"? cmd_record[cmd][args[0]] + " " + eventEmbed : cmd==="nr"? pays + ' Record'+ " " + eventEmbed : cmd_record[cmd] +" " + eventEmbed;
 		let WRS = '';
 		let WRA = '';
 
@@ -180,7 +219,7 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 
 		}    	
 
-    	Embed(timeSingle, timeAverage, nameSingle, nameAverage, flagSingle, flagAverage, WRS, WRA, msg, title, cmd);
+    	Embed(timeSingle, timeAverage, nameSingle, nameAverage, flag_single, flag_avg, WRS, WRA, msg, title, cmd);
 
 
     	

@@ -10,7 +10,6 @@ const events ={
 	"5bld": "555bf",
 	"22": "222",
 	"mega": "minx",
-	"feet": "333ft",
 	"clock": "clock",
 	"fmc": "333fm",
 	"pyra": "pyram",
@@ -25,8 +24,8 @@ const single ={
 }
 const continents ={
 	"eu": "Europe",
-	"na": "North America",
-	"sa": "South America",
+	"na": "North%20America",
+	"sa": "South%20America",
 	"as": "Asia",
 	"af": "Africa",
 	"oc": "Oceania"
@@ -277,7 +276,6 @@ const isoCountries = {
     'AE' : 'United Arab Emirates',
     'GB' : 'United Kingdom',
     'US' : 'USA',
-    'US': 'United States',
     'UM' : 'United States Outlying Islands',
     'UY' : 'Uruguay',
     'UZ' : 'Uzbekistan',
