@@ -1,14 +1,15 @@
 import Discord from 'discord.js';
 import {requestWCA} from './requestWCA.js';
 import {help} from './help.js';
-import {events} from './help.js';
+import {events} from './param.js';
 import {error} from './error.js'
 import {continent} from './help.js';
 import {continents} from './param.js';
 import {isoCountries} from './param.js';
 import {recordPerson} from './recordPerson.js';
-import {requestWCAFeet} from './requestWCA.js';
 import {ranking} from './ranking.js';
+import {invScramble} from './invScramble.js';
+import {requestWCAAll} from './reqAll.js'
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
 Bot.on('ready', () => {
@@ -28,11 +29,14 @@ Bot.on('messageCreate', msg  => {
 		let args = msgSimple.slice(1)
 		var pays = 1;
 
-		if (!['wr', 'cr', 'nr', 'id', 'help', 'events', 'continents', 'countries', 'ranking'].includes(cmd)){
+		if (!['wr', 'cr', 'nr', 'id', 'help', 'events', 'continents', 'countries', 'ranking', 'inv'].includes(cmd)){
 			error(cmd, msg);
 			return;
 		}
 
+		else if (cmd === 'inv'){
+			invScramble(args, msg);
+		}
 		else if (cmd === 'id'){
 			if (args.length !== 2){
 				if (args.length === 1 ){
@@ -49,13 +53,6 @@ Bot.on('messageCreate', msg  => {
 			}
 			recordPerson(cmd, args, msg);
 		}
-		else if (args[0] ==='feet' && ['nr', 'wr', 'cr'].includes(cmd)){
-			msg.channel.send("Commande en maintenance (et puis c'est du feet hein, ça va)");
-			return;
-			var pays = cmd === 'nr' ? isoCountries[args[1].toUpperCase()] : 1;
-			var cont = cmd ==='cr' ? continents[args[1]] : 1;
-			requestWCAFeet(cmd, args, msg, pays, cont);
-		}
 
 		else if (cmd === 'wr'){
 			let event = events[args[0]]
@@ -63,16 +60,22 @@ Bot.on('messageCreate', msg  => {
 				msg.channel.send("Donnez un seul paramètre avec la commande 'wr'. \n Pour la liste d'events' '%events'");
 				return;
 			}
+			if (event === undefined){
+				requestWCAAll(cmd, args, msg)
+				return;
+			}
     		requestWCA(cmd, args, msg, pays);
     	}
 		else if (cmd === 'cr'){
-    		let event = events[args[0]]
-    		let cont = '_'+continents[args[1]];
-    			if (args.length !== 2){
-    				msg.channel.send("Donnez deux paramètre avec la commande 'cr' ( 1) l'event, 2) le continent). \n Pour la liste des events '%events'. \n Pour la liste des continents '%continent'.");
-    				return;
-    			}
-
+			let event = events[args[0]]
+			if (args.length !==2){
+				msg.channel.send("Donnez deux paramètre avec la commande 'cr'. \n Pour la liste d'events' '%events' \n Pour la liste de continents '%continents'");
+				return;
+			}
+			if (event === undefined){
+				requestWCAAll(cmd, args, msg)
+				return;
+			}
     		requestWCA(cmd, args, msg, pays,  cont);
     	}
 
@@ -83,6 +86,10 @@ Bot.on('messageCreate', msg  => {
     			msg.channel.send("Donnez deux paramètres avec la commande 'nr' ( 1) l'event, 2) le pays). \n Pour la liste des events '%events'. \n Pour la liste des pays '%countries'.");
     			return;
     		}
+    		if (event === undefined){
+				requestWCAAll(cmd, args, msg)
+				return;
+			}
     		requestWCA(cmd, args, msg, pays);
     	}
 

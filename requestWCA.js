@@ -79,7 +79,6 @@ const Embed = (timeSingle, timeAverage, nameSingle, nameAvg, flag_single, flag_a
 const embedMbld = (timeSingle, nameSingle, flagSingle, WRS, WRA, title, msg, cmd) =>{
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676';
 	let singleEmote = "<:Single:369420530098372608>";
-	//var nameSingle = cmd === "wr" ?`${single} ${nameSingle} ${flagSingle}` :`${single} ${nameSingle} ${flagSingle} ${WRS}`;
 	let nameEmbedSingle = `${singleEmote} ${nameSingle} ${flagSingle}`;
 	let listeSingleSplit = timeSingle.split(" ");
 	let time = listeSingleSplit[0] + " en " + listeSingleSplit[1];
@@ -91,57 +90,6 @@ const embedMbld = (timeSingle, nameSingle, flagSingle, WRS, WRA, title, msg, cmd
 	 msg.channel.send({embeds: [exampleEmbedMbld]});
 }
 
-
-const requestWCAFeet = async (cmd, args, msg, pays, cont=1) => {
-	let single = "<:Single:369420530098372608>";
-	let avg ='<:AVG:369418969351716864>';
-
-	let pageWcaSingle = 'https://www.worldcubeassociation.org/results/rankings/333ft/single?show=by+region';
-	const requestSingle = await fetch(pageWcaSingle);
-	const requestSingleF = await requestSingle.text();
-	let pageWcaAverage = 'https://www.worldcubeassociation.org/results/rankings/333ft/average?show=by+region';
-	const requestAverage = await fetch(pageWcaAverage);
-	const requestAverageF = await requestAverage.text();
-
-
-	const pageWca = "https://www.worldcubeassociation.org/results/records?event_id=";
-	var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
-	let pageWcaFinal = pageWca + events[args[0]] + region;
-	let liste = await getRankRecord(pageWcaFinal, args);
-	var WRS = liste[0] === '' ? '' :  `(WR ${liste[0]})`;
-	var WRA = liste[1] === '' ? '' :  `(WR ${liste[1]})`;
-
-	const timeNameAndFlagFeet =async (page) =>{
-
-		var patternT = cmd === 'wr' ? /World <.+\n.+"> (.+) </gm : cmd === 'cr'? new RegExp(cont +' <.+\n.+"> (.+) <', 'gm') : new RegExp(pays+ ' <.+\n.+"> (.+) <', 'gm');
-		var patternN = cmd === 'wr' ? /World <.+\n.+\n.+">(.+)<.a/gm : cmd === 'cr'? new RegExp(cont+' <.+\n.+\n.+">(.+)<.a', 'gm') : new RegExp(pays + ' <.+\n.+\n.+">(.+)<.a', 'gm');
-		var patternID = cmd ==='wr' ? new RegExp('World .+\n.+\n.+"(.+)"', 'gm'): cmd === 'cr' ? new RegExp(cont + ' .+\n.+\n.+"(.+)"', 'gm') : new RegExp(pays + ' .+\n.+\n.+"(.+)"','gm');
-		
-		let time = patternT.exec(page);
-		let timeF = time[1];
-		let name = patternN.exec(page);
-		let nameF = name[1];
-
-		let wcaBase = 'https://www.worldcubeassociation.org';
-		let wcaID = patternID.exec(page);
-		let wcaIDF = wcaID[1];
-		let pageWcaId = wcaBase+wcaIDF;
-		let requestFlag = await fetch(pageWcaId);
-		let requestFlagF = await requestFlag.text();
-		let patternF = /fi fi-(.+)"/gm;
-		let flag = patternF.exec(requestFlagF);
-		let flagF = `:flag_${flag[1]}:`;
-
-
-		return([timeF, nameF, flagF]);
-	}
-	let singleF = await(timeNameAndFlagFeet(requestSingleF));
-	let averageF = await(timeNameAndFlagFeet(requestAverageF));
-
-	var title = cmd === "cr"? cmd_record[cmd][args[1]] + " " + args[0] : cmd==="nr"? pays + ' Record'+ " " + args[0] : cmd_record[cmd] +" " + args[0];
-
-	let test = Embed(single, avg, singleF[0], averageF[0], msg, title, singleF[1], averageF[1], singleF[2], averageF[2], WRS, WRA, cmd);
-}
 
 const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 
@@ -167,7 +115,7 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 
 
 		const pageWcA = "https://www.worldcubeassociation.org/results/records?event_id=";
-		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[0]] : '&region='+ isoCountries[args[0].toUpperCase()];
+		var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[0].toUpperCase()];
 		let pageWcaFinaL = pageWcA+ events[event] +region;
 		let request = await fetch(pageWcaFinaL);
 		let page = await request.text();
@@ -227,4 +175,3 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 }
 
 export {requestWCA};
-export {requestWCAFeet};

@@ -35,7 +35,7 @@ const ranking = async (cmd, args, msg)=>{
 	var i = isNaN(args[0]) === true && args[0] !== "average" ? 0 : isNaN(args[1]) === true && args[1] !== "average" ? 1 : isNaN(args[2]) === true && args[2] !== "average" ? 2 :  undefined;
 	let regArg = args[i]
 	args.splice(i, 1);
-	var average = args[0] === "average" ? "average" : undefined;
+	var average = args[0] === "average" ? "average" : undefined;	
 
 	
 	let conts = Object.keys(continents);
@@ -53,7 +53,7 @@ const ranking = async (cmd, args, msg)=>{
 			times.push($(`#results-list > div > table > tbody > tr:nth-child(${n}) > td.result`, page).text());
 			n++;	
 		}
-	let url = 'https://www.worldcubeassociation.org/results/rankings/' + events[args[0]] + '/single' + region;
+	var url = average === undefined ? 'https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/single' + region : 'https://www.worldcubeassociation.org/results/rankings/' + events[event] + '/average' + region;
 	var title = region === "" ? `Top ${rank} ${eventEmbed} world` : `Top ${rank} ${eventEmbed} ${region}`.replace("?region=", "").replace("_", "");
 
 	let embedFields = [];
