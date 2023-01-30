@@ -8,7 +8,6 @@ import {continents} from './param.js';
 import {isoCountries} from './param.js';
 import {recordPerson} from './recordPerson.js';
 import {ranking} from './ranking.js';
-import {invScramble} from './invScramble.js';
 import {requestWCAAll} from './reqAll.js'
 let Bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 
