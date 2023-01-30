@@ -137,19 +137,25 @@ const requestWCA = async(cmd, args, msg, pays, cont=1) => {
 		var flag_single = []
 		var flag_avg = []
 		for (let i=0; i<flagSingle.length; i++){
-			if (flagSingle[i] !== "United States"){
+			if (flagSingle[i] !== "United States" && flagSingle[i] !== "Republic of Korea"){
 				flag_single.push(getFlag(flagSingle[i]))
 			}
 			else if (flagSingle[i] === "United States"){
 				flag_single.push(getFlag('USA'))
 			}
+			else if (flagSingle[i] === 'Republic of Korea'){
+				flag_single.push(getFlag("Korea"))
+			}
 		}
 		for (let i=0; i<flagAverage.length; i++){
-			if (flagAverage[i] !== "United States"){
+			if (flagAverage[i] !== "United States" && flagAverage[i] !=="Republic of Korea"){
 				flag_avg.push(getFlag(flagAverage[i]))
 			}
 			else if (flagAverage[i] === "United States"){
 				flag_avg.push(getFlag('USA'))
+			}
+			else if (flagAverage[i] === 'Republic of Korea'){
+				flag_avg.push(getFlag("Korea"))
 			}
 		}
 		let timeSingle = getInfos(data['Single'], 'time');

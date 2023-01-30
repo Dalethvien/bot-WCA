@@ -21,7 +21,7 @@ const getTime = (page, $)=>{
 }
 
 const getCountry = (page, $)=>{
-	let cheerioCountry = $(".country", page).text().trim();
+	var cheerioCountry = $(".country", page).text().trim() === 'United States' ? 'USA' :$(".country", page).text().trim() === 'Republic of Korea' ? 'Korea' : $(".country", page).text().trim();
 	let country = Object.keys(isoCountries).find(key => isoCountries[key] === cheerioCountry).toLowerCase();
 	let flag = `:flag_${country}:`;
 	return(flag);
