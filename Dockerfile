@@ -17,5 +17,6 @@ COPY wca.js .
 COPY recordPerson.js .
 COPY getRank.js .
 COPY ranking.js .
+COPY reqAll.js
 
 CMD ["node", "wca.js"]
