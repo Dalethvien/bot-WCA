@@ -17,8 +17,7 @@ const getFlag = (data)=>{
 const requestWCAAll = async(cmd, args, msg) =>{
 	let event = ['33', '22', '44', '55', '66', '77', '3bld', 'fmc', 'oh', 'clock', 'mega', 'pyra', 'skewb', 'sq1', '4bld', '5bld', 'mbld']
 	var tableau = [];
-	var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[1]] : '&region='+ isoCountries[args[1].toUpperCase()];
-
+	var region = cmd === 'wr' ? '&region=world' : cmd === 'cr' ? '&region=_'+ continents[args[0]] : '&region='+ isoCountries[args[0].toUpperCase()];
 	let pageWca =`https://worldcubeassociation.org/results/records?event_id=all+events${region}`
 	let request = await fetch(pageWca)
 	let page = await request.text();
@@ -86,7 +85,7 @@ const requestWCAAll = async(cmd, args, msg) =>{
 		})} catch(err) {}
 		
 }
-	var title = cmd === 'wr' ? 'World records of all wca events' : cmd === 'cr' ? cmd_record[cmd][args[1]] +" of all wca events" : 'All wca records of '+ isoCountries[args[1].toUpperCase()];
+	var title = cmd === 'wr' ? 'World records of all wca events' : cmd === 'cr' ? cmd_record[cmd][args[0]] +" of all wca events" : 'All wca records of '+ isoCountries[args[0].toUpperCase()];
 	var color = cmd === 'wr' ? '#F44337' : cmd === 'cr' ?'#FFEC3C' : '#01E676'; 
 	const exampleEmbed = new MessageEmbed()
 	.setColor(color)
